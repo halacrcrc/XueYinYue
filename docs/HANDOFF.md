@@ -69,9 +69,14 @@ web/    Vite + 原生 JS
 
 ## 待办（后续增强，非必需）
 
+- ✅ 2026-10-25 新增：**音乐乐园 `#/fun`**（合奏总线：鼓机+和声进行同 BPM 对齐；乐器台钢琴/吉他切换；调性切换音阶高亮）、**吉他指板组件 `fretboard.js`**（6 弦×0-12 品，同音异位品格一起高亮）、**自动部署**（`.github/workflows/deploy.yml`，仓库已公开，Pages=https://halacrcrc.github.io/XueYinYue/）
+- 教学增强：节奏听辨题、和弦转位教学、五度圈工具页、更多调性（小调练耳）
+- PWA 离线：自托管 smplr 采样 + Service Worker（约 1 小时）
+- 键盘映射提示浮层、移动端钢琴多点触控优化
+
 > 决策记录（2026-10-25）：**RustySynth 全 Rust 音色引擎已评估并否决**——Web Audio 本身即原生管线，
 > smplr 只做采样触发，无性能可赚；换它需打包数 MB 的 .sf2 并改造 AudioWorklet（全项目最难调试处）。
-> 若将来要完全离线，正确做法是**自托管 smplr 采样文件到 dist/**（约 1 小时工作量），而非换引擎。
+> 若将来要完全离线，正确做法是**自托管 smplr 采样文件到 dist/**，而非换引擎。
 > 仅当需要 128 种乐器或自定义合成（FM 等）时才重新评估。
 
 1. **阶段5 收尾**：写 `web/src/content/ch6.js`（调内和弦/级数/进行/名曲重建/移调实验室/quiz）；components.css 补 `.diatonic-grid/.diatonic-btn/.prog-info/.keytool-*`；main.js `CHAPTER_CONTENT` 加 `6: ch6`；浏览器验证

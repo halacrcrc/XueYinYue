@@ -191,15 +191,16 @@ export function createPiano(el, { startMidi = 60, octaves = 2, onNote = () => {}
       state.key = { tonic, mode }
       refreshLabels()
     },
-    /** 高亮一组键：entries = [[midi, cssColor], ...] */
+    /** 高亮一组键：entries = [[midi, cssColor], ...] 或纯 [midi, ...]（默认陶土色） */
     setHighlights(entries) {
       this.clearHighlights()
-      for (const [midi, color] of entries) {
+      for (const entry of entries) {
+        const [midi, color] = Array.isArray(entry) ? entry : [entry, null]
         const btn = keyEls.get(midi)
         if (!btn) continue
         state.highlights.set(midi, color)
         btn.classList.add('is-highlighted')
-        btn.style.setProperty('--hl', color)
+        btn.style.setProperty('--hl', color || 'var(--clay)')
       }
     },
     clearHighlights() {

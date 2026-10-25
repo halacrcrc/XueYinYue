@@ -149,6 +149,14 @@ export function createSequencer(el, { steps = 16, bpm = 96, pattern = null } = {
 
   return {
     el,
+    /** 供外部（音乐乐园合奏）程序化启动 */
+    start,
+    /** 供外部同步 BPM（面板滑块与显示一并更新） */
+    setBpm(v) {
+      state.bpm = v
+      slider.value = String(v)
+      slider.dispatchEvent(new Event('input'))
+    },
     setPattern(next) {
       for (const [lane, arr] of Object.entries(next)) {
         state.pattern[lane].clear()

@@ -803,6 +803,146 @@ kbd {
 .option-btn.is-solfege:hover { border-color: var(--dg); }
 .option-btn.is-solfege.is-right { border-color: var(--dg); background: color-mix(in srgb, var(--dg) 10%, var(--surface)); color: var(--dg); }
 
+/* ============ 音乐乐园 ============ */
+.fun-page {
+  max-width: 60rem;
+  padding: 2.5rem 0 4rem;
+}
+
+.fun-transport {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+#jam-btn.is-playing { background: var(--do); }
+
+.fun-hint { font-size: var(--text-xs); color: var(--ink-soft); flex: 1; min-width: 12rem; }
+
+.fun-block {
+  margin: 2rem 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.section-title.sm { font-size: var(--text-md); }
+
+.fun-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.fun-prog-desc { color: var(--ink-soft); font-size: var(--text-sm); margin: 0.875rem 0 0; }
+
+.fun-instr-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.fun-instr-head .section-title { margin: 0; }
+.fun-instr-head .chips { display: inline-flex; }
+.fun-instr-tabs { gap: 0.75rem; }
+
+/* ---------- 吉他指板 ---------- */
+.fretboard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: linear-gradient(90deg, transparent 3.2rem, var(--surface) 3.2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 0.75rem;
+  overflow-x: auto;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.fb-ruler,
+.fb-row {
+  display: grid;
+  grid-template-columns: 3rem repeat(13, minmax(2.6rem, 1fr));
+  gap: 4px;
+  min-width: min(40rem, 100%);
+}
+
+.fb-fret-no { text-align: center; font-size: var(--text-xs); color: var(--ink-soft); }
+
+.fb-string-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.fb-cell {
+  position: relative;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: transparent;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+/* 空弦（第 0 品）用弦枕色 */
+.fb-cell.is-open { background: var(--line); border-color: var(--line-strong); }
+
+/* 常用品位标记（3/5/7/9/12）单点装饰 */
+.fb-cell.is-marker::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.fb-cell.is-highlighted {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--clay) 14%, var(--paper));
+  border-color: color-mix(in srgb, var(--clay) 45%, var(--line));
+}
+
+.fb-cell.is-highlighted[data-degree='1'] { color: var(--do); }
+.fb-cell.is-highlighted[data-degree='2'] { color: var(--re); }
+.fb-cell.is-highlighted[data-degree='3'] { color: var(--mi); }
+.fb-cell.is-highlighted[data-degree='4'] { color: var(--fa); }
+.fb-cell.is-highlighted[data-degree='5'] { color: var(--sol); }
+.fb-cell.is-highlighted[data-degree='6'] { color: var(--la); }
+.fb-cell.is-highlighted[data-degree='7'] { color: var(--si); }
+
+.fb-cell.is-pressed {
+  transform: scale(0.94);
+  box-shadow: inset 0 2px 5px rgba(38, 36, 31, 0.25);
+}
+
+.fb-cell.is-flash {
+  box-shadow: 0 0 0 3px var(--clay), 0 0 16px color-mix(in srgb, var(--clay) 40%, transparent);
+}
+
 /* ============ 响应式 ============ */
 @media (max-width: 640px) {
   .piano { height: 150px; }

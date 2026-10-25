@@ -4,6 +4,7 @@ import { renderHome } from './pages/home.js'
 import { CHAPTERS } from './dashboard.js'
 import { renderChapter } from './lesson.js'
 import { renderEar } from './pages/ear.js'
+import { renderFun } from './pages/fun.js'
 import { ch1 } from './content/ch1.js'
 import { ch2 } from './content/ch2.js'
 import { ch3 } from './content/ch3.js'
@@ -48,6 +49,8 @@ function route() {
     currentPage = renderHome(main)
   } else if (hash.startsWith('#/chapter/')) {
     currentPage = renderChapterPage(main, hash.split('/').pop())
+  } else if (hash.startsWith('#/fun')) {
+    currentPage = renderFun(main)
   } else if (hash.startsWith('#/ear')) {
     currentPage = renderChapterPage(main, 'ear')
   } else {
