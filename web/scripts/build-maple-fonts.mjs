@@ -10,6 +10,7 @@ import { rm } from 'node:fs/promises'
 const JOBS = [
   { weight: '400', file: 'MapleMonoNormal-NF-CN-Regular.ttf' },
   { weight: '700', file: 'MapleMonoNormal-NF-CN-Bold.ttf' },
+  { weight: '800', file: 'MapleMonoNormal-NF-CN-ExtraBold.ttf' },
 ]
 const SRC_DIR = process.env.MAPLE_SRC ?? '/tmp/maple'
 
