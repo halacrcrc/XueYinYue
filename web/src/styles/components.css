@@ -601,7 +601,9 @@ kbd {
 /* 演示块 */
 .demo-block .piano { height: 170px; }
 
-.demo-bar { margin-top: 1rem; }
+.demo-bar { margin-top: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+
+.demo-label-chips .chip { min-height: 32px; padding: 0.25rem 0.875rem; }
 
 /* 练习块 */
 .quiz-block {

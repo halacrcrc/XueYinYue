@@ -277,7 +277,7 @@ export function renderChapter(main, chapter) {
     let highlightMidis = block.highlight ?? (info ? info.midis : [])
     const hlColor = resolveVar(block.colorVar || chapter.colorVar)
 
-    // 播放按钮
+    // 播放按钮 + 标签切换
     const bar = document.createElement('div')
     bar.className = 'demo-bar'
     const btn = document.createElement('button')
@@ -285,6 +285,32 @@ export function renderChapter(main, chapter) {
     btn.className = 'btn btn-primary'
     btn.textContent = block.button || '听示范'
     bar.appendChild(btn)
+
+    const initialLabel = block.label || (block.key ? 'jianpu' : 'name')
+    const chips = document.createElement('div')
+    chips.className = 'chips demo-label-chips'
+    chips.setAttribute('role', 'group')
+    chips.setAttribute('aria-label', '琴键标签')
+    for (const [mode, text] of [
+      ['name', '音名'],
+      ['jianpu', '简谱'],
+      ['none', '无'],
+    ]) {
+      const chip = document.createElement('button')
+      chip.type = 'button'
+      chip.className = 'chip' + (mode === initialLabel ? ' is-active' : '')
+      chip.textContent = text
+      chip.addEventListener('click', () => {
+        chips.querySelectorAll('.chip').forEach((c) => c.classList.remove('is-active'))
+        chip.classList.add('is-active')
+        if (mode === 'jianpu') {
+          piano.setKey(block.key?.tonic || 'C', block.key?.mode || 'major')
+        }
+        piano.setLabel(mode)
+      })
+      chips.appendChild(chip)
+    }
+    bar.appendChild(chips)
     body.appendChild(bar)
 
     const applyHighlight = () => {
