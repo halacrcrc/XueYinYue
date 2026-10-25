@@ -174,13 +174,18 @@ kbd {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.note-head { stroke-width: 2.5; transition: fill var(--dur) var(--ease-out); }
-.melody-note .note-head { stroke: var(--note-color); }
-.melody-note:hover .note-head { fill: var(--note-color); }
-.melody-note.active .note-head { fill: color-mix(in srgb, var(--note-color) 35%, var(--paper)); }
+/* 音符头：厚实的实心椭圆，未开始也带章节色底 */
+.note-head {
+  stroke: var(--note-color);
+  stroke-width: 4;
+  fill: color-mix(in srgb, var(--note-color) 30%, var(--paper));
+  transition: fill var(--dur) var(--ease-out);
+}
+.melody-note.active .note-head { fill: color-mix(in srgb, var(--note-color) 55%, var(--paper)); }
 .melody-note.done .note-head { fill: var(--note-color); }
+.melody-note:hover .note-head { fill: var(--note-color); }
 
-.note-stem { stroke: var(--ink); stroke-width: 2; transition: stroke var(--dur) var(--ease-out); }
+.note-stem { stroke: var(--ink); stroke-width: 3.2; transition: stroke var(--dur) var(--ease-out); }
 .melody-note:hover .note-stem { stroke: var(--note-color); }
 
 .note-chapter {
@@ -730,6 +735,57 @@ kbd {
 .dash-tools { display: flex; gap: 0.5rem; }
 
 .btn-sm { min-height: 36px; padding: 0 0.875rem; font-size: var(--text-xs); }
+
+/* 云同步面板 */
+.sync-panel {
+  width: 100%;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.sync-panel summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  user-select: none;
+}
+.sync-panel[open] summary { color: var(--ink); margin-bottom: 0.75rem; }
+
+.sync-fields {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 11rem;
+  gap: 0.625rem;
+}
+
+.sync-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+.sync-fields input,
+.sync-fields select {
+  font: inherit;
+  font-size: var(--text-sm);
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 36px;
+}
+
+.sync-actions { display: flex; gap: 0.625rem; margin: 0.75rem 0 0.375rem; }
+
+.sync-status { font-size: var(--text-xs); margin: 0.375rem 0; min-height: 1em; }
+.sync-status.is-ok { color: var(--fa); }
+.sync-status.is-err { color: var(--do); }
+
+.sync-help { font-size: var(--text-xs); color: var(--ink-soft); line-height: 1.6; margin: 0.25rem 0 0.25rem; }
 
 /* 热力图：12 周 × 7 天 */
 .heat-wrap { margin-top: 1.5rem; }

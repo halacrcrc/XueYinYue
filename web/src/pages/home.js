@@ -61,6 +61,32 @@ export function renderHome(main) {
         </div>
       </section>
 
+      <details class="sync-panel" id="sync-panel">
+        <summary>☁ 云同步进度（GitHub / Gitee Gist）</summary>
+        <div class="sync-body">
+          <div class="sync-fields">
+            <label>服务
+              <select id="sync-provider">
+                <option value="github">GitHub</option>
+                <option value="gitee">Gitee</option>
+              </select>
+            </label>
+            <label class="sync-token">访问令牌（只勾选 gist 权限）
+              <input type="password" id="sync-token" placeholder="ghp_… / gitee 私人令牌" autocomplete="off" />
+            </label>
+            <label>Gist ID（首次备份后自动填）
+              <input type="text" id="sync-gistid" placeholder="留空即可" autocomplete="off" />
+            </label>
+          </div>
+          <div class="sync-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="sync-push">备份到云</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="sync-pull">从云恢复（合并）</button>
+          </div>
+          <p class="sync-status" id="sync-status"></p>
+          <p class="sync-help">令牌只保存在你自己的浏览器里，只用于读写这一个 Gist。GitHub：Settings → Developer settings → Personal access tokens（Classic）→ 只勾 <b>gist</b>；Gitee：设置 → 私人令牌 → 只勾 <b>gists</b>。</p>
+        </div>
+      </details>
+
       <section class="section melody-map-section" aria-label="课程旋律图">
         <h2 class="section-title">课程是一条旋律</h2>
         <p class="section-sub">七个章节沿五线谱上行，点亮的音符是你的进度。点击任意音符进入章节。</p>
@@ -120,6 +146,64 @@ export function renderHome(main) {
       alert(`导入失败：${err.message || err}`)
     }
   })
+
+  // 云同步面板
+  const syncPanel = main.querySelector('#sync-panel')
+  {
+    const cfg = progress.getSyncConfig()
+    const providerEl = main.querySelector('#sync-provider')
+    const tokenEl = main.querySelector('#sync-token')
+    const gistEl = main.querySelector('#sync-gistid')
+    const statusEl = main.querySelector('#sync-status')
+    providerEl.value = cfg.provider || 'github'
+    tokenEl.value = cfg.token || ''
+    gistEl.value = cfg.gistId || ''
+    const saveCfg = () =>
+      progress.setSyncConfig({
+        provider: providerEl.value,
+        token: tokenEl.value.trim(),
+        gistId: gistEl.value.trim(),
+      })
+    providerEl.addEventListener('change', saveCfg)
+    tokenEl.addEventListener('change', saveCfg)
+    gistEl.addEventListener('change', saveCfg)
+
+    main.querySelector('#sync-push').addEventListener('click', async (e) => {
+      saveCfg()
+      e.target.disabled = true
+      statusEl.textContent = '上传中…'
+      statusEl.className = 'sync-status'
+      try {
+        const id = await progress.pushToCloud()
+        gistEl.value = id
+        saveCfg()
+        statusEl.textContent = `已备份 ✓（Gist：${id}）`
+        statusEl.classList.add('is-ok')
+      } catch (err) {
+        statusEl.textContent = `备份失败：${err.message || err}`
+        statusEl.classList.add('is-err')
+      } finally {
+        e.target.disabled = false
+      }
+    })
+
+    main.querySelector('#sync-pull').addEventListener('click', async (e) => {
+      saveCfg()
+      e.target.disabled = true
+      statusEl.textContent = '下载合并中…'
+      statusEl.className = 'sync-status'
+      try {
+        await progress.pullFromCloud()
+        statusEl.textContent = '已恢复并合并 ✓，即将刷新页面…'
+        statusEl.classList.add('is-ok')
+        setTimeout(() => location.reload(), 900)
+      } catch (err) {
+        statusEl.textContent = `恢复失败：${err.message || err}`
+        statusEl.classList.add('is-err')
+        e.target.disabled = false
+      }
+    })
+  }
 
   const piano = createPiano(main.querySelector('.piano-mount'), {
     startMidi: 60,

@@ -69,7 +69,8 @@ web/    Vite + 原生 JS
 
 ## 待办（后续增强，非必需）
 
-- ✅ 2026-10-25 新增：**音乐乐园 `#/fun`**（合奏总线：鼓机+和声进行同 BPM 对齐；乐器台钢琴/吉他切换；调性切换音阶高亮）、**吉他指板组件 `fretboard.js`**（6 弦×0-12 品，同音异位品格一起高亮）、**自动部署**（`.github/workflows/deploy.yml`，仓库已公开，Pages=https://halacrcrc.github.io/XueYinYue/）
+- ✅ 2026-10-25 二批：**旋律图音符加厚**（4px 描边+章节色实心底）；**Gist 云同步**（首页 ☁ 面板：GitHub/Gitee 令牌 + 自动建 Gist + 合并式拉取；mergeDocs 双向取大；已端到端实测）
+- ✅ 2026-10-25 一批：**音乐乐园 `#/fun`**、**吉他指板 `fretboard.js`**、**自动部署**（Pages=https://halacrcrc.github.io/XueYinYue/）
 - 教学增强：节奏听辨题、和弦转位教学、五度圈工具页、更多调性（小调练耳）
 - PWA 离线：自托管 smplr 采样 + Service Worker（约 1 小时）
 - 键盘映射提示浮层、移动端钢琴多点触控优化

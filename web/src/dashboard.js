@@ -43,13 +43,12 @@ export function buildMelodyMap(container, progress = {}) {
     const middleLine = staffTop + lineGap * 2
     const stemUp = cy > middleLine
     const stem = stemUp
-      ? `<line x1="${x + 10}" y1="${cy - 3}" x2="${x + 10}" y2="${cy - 46}" class="note-stem" />`
-      : `<line x1="${x - 10}" y1="${cy + 3}" x2="${x - 10}" y2="${cy + 46}" class="note-stem" />`
-    const fill = state === 'done' ? `var(${ch.colorVar})` : 'var(--paper)'
+      ? `<line x1="${x + 11}" y1="${cy - 3}" x2="${x + 11}" y2="${cy - 48}" class="note-stem" />`
+      : `<line x1="${x - 11}" y1="${cy + 3}" x2="${x - 11}" y2="${cy + 48}" class="note-stem" />`
     svg += `
       <a href="${ch.href}" class="melody-note ${state}" style="--note-color: var(${ch.colorVar}); --i: ${i}">
         <title>${ch.label} ${ch.title}</title>
-        <ellipse cx="${x}" cy="${cy}" rx="11.5" ry="8.5" transform="rotate(-18 ${x} ${cy})" class="note-head" fill="${fill}" />
+        <ellipse cx="${x}" cy="${cy}" rx="13" ry="10" transform="rotate(-20 ${x} ${cy})" class="note-head" />
         ${stem}
         <text x="${x}" y="${staffTop + lineGap * 4 + 46}" class="note-chapter">${ch.label}</text>
         <text x="${x}" y="${staffTop + lineGap * 4 + 70}" class="note-title">${ch.title}</text>
