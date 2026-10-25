@@ -35,6 +35,9 @@ export function buildMelodyMap(container, progress = {}) {
   const renderer = new Renderer(wrap, Renderer.Backends.SVG)
   renderer.resize(W, H)
   const ctx = renderer.getContext()
+  // 显式 viewBox：任意容器宽度下按矢量等比缩放，文字不拉伸不糊
+  const svgEl = wrap.querySelector('svg')
+  if (svgEl) svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`)
 
   const stave = new Stave(30, 40, W - 60)
   stave.addClef('treble')

@@ -122,14 +122,14 @@ kbd {
   flex-direction: column;
   align-items: center;
   line-height: 1.1;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--ink-soft);
+  font-size: 0.875rem;
+  font-weight: 400; /* 小字只用真实存在的 400/700，杜绝假粗体发糊 */
+  color: var(--ink);
   pointer-events: none;
 }
 
-.piano-key.black .key-label { color: rgba(255, 255, 255, 0.75); }
-.key-label b { font-weight: 700; font-size: 0.95rem; }
+.piano-key.black .key-label { color: rgba(255, 255, 255, 0.92); }
+.key-label b { font-weight: 700; font-size: 1.0625rem; }
 .key-label .dots { font-size: 0.5rem; letter-spacing: 1px; font-style: normal; }
 
 /* 唱名级数着色：数字与键底色条 */
@@ -198,16 +198,16 @@ kbd {
 .melody-note.active .nch { opacity: 0.85; }
 
 .note-chapter {
-  font-size: 14px;
+  font-size: 13px;
   fill: var(--ink-soft);
-  font-family: var(--font-body);
+  font-family: 'Noto Sans SC', sans-serif;
 }
 
 .note-title {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 700;
   fill: var(--ink);
-  font-family: var(--font-display);
+  font-family: 'Noto Sans SC', sans-serif;
   transition: fill var(--dur) var(--ease-out);
 }
 
@@ -256,6 +256,7 @@ kbd {
 .back-link:hover { color: var(--ink); }
 
 .chapter-chip {
+  font-family: 'Noto Sans SC', sans-serif;
   display: inline-block;
   padding: 0.25rem 0.875rem;
   border-radius: 999px;
@@ -974,8 +975,8 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6875rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 400;
   color: var(--ink-soft);
   transition:
     transform var(--dur-fast) var(--ease-spring),
@@ -1060,6 +1061,7 @@ kbd {
 }
 
 .cc-badge {
+  font-family: 'Noto Sans SC', sans-serif;
   align-self: flex-start;
   font-size: var(--text-xs);
   font-weight: 700;
