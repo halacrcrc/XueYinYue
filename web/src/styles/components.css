@@ -1,0 +1,825 @@
+/* ============ 通用区块 ============ */
+.section { padding: clamp(1.5rem, 4vw, 3rem) 0; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-lg);
+  margin: 0 0 0.5rem;
+}
+
+.section-sub {
+  color: var(--ink-soft);
+  margin: 0 0 1.5rem;
+  max-width: var(--measure);
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.85em;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 0.05em 0.45em;
+  background: var(--surface);
+}
+
+/* ============ 筛选 chips ============ */
+.chips {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.chip {
+  border: 0;
+  background: transparent;
+  padding: 0.375rem 1rem;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  cursor: pointer;
+  min-height: 36px;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.chip:hover { color: var(--ink); }
+.chip.is-active { background: var(--ink); color: var(--paper); }
+
+/* ============ 钢琴 ============ */
+.piano {
+  position: relative;
+  height: 200px;
+  max-width: 940px;
+  margin-inline: auto;
+  user-select: none;
+  touch-action: none;
+}
+
+.piano-key {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.piano-key.white {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f3ec 100%);
+  border: 1px solid var(--line-strong);
+  border-radius: 0 0 7px 7px;
+  box-shadow:
+    0 3px 0 rgba(38, 36, 31, 0.1),
+    inset 0 -10px 14px -10px rgba(38, 36, 31, 0.16);
+  z-index: 1;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.piano-key.white.is-pressed {
+  transform: translateY(3px);
+  background: linear-gradient(180deg, #faf9f6 0%, #edebe3 100%);
+  box-shadow:
+    0 0 0 rgba(38, 36, 31, 0),
+    inset 0 4px 9px rgba(38, 36, 31, 0.22);
+}
+
+.piano-key.black {
+  height: 62%;
+  background: linear-gradient(180deg, #3d3a31 0%, var(--ebony) 35%);
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+  box-shadow:
+    0 5px 7px rgba(38, 36, 31, 0.35),
+    inset 0 -6px 9px -6px rgba(255, 255, 255, 0.14);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.piano-key.black.is-pressed {
+  transform: translateY(3px);
+  box-shadow: 0 1px 2px rgba(38, 36, 31, 0.4);
+}
+
+/* 高亮：细描边环 + 微光（用于音阶/和弦演示与答题反馈） */
+.piano-key.is-highlighted { box-shadow: 0 0 0 3px var(--hl, var(--clay)), 0 0 18px color-mix(in srgb, var(--hl, var(--clay)) 45%, transparent); }
+.piano-key.white.is-highlighted.is-pressed { box-shadow: 0 0 0 3px var(--hl), inset 0 4px 9px rgba(38, 36, 31, 0.22); }
+
+.key-label {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.piano-key.black .key-label { color: rgba(255, 255, 255, 0.75); }
+.key-label b { font-weight: 700; font-size: 0.95rem; }
+.key-label .dots { font-size: 0.5rem; letter-spacing: 1px; font-style: normal; }
+
+/* 唱名级数着色：数字与键底色条 */
+.piano-key[data-degree='1'] .key-label b { color: var(--do); }
+.piano-key[data-degree='2'] .key-label b { color: var(--re); }
+.piano-key[data-degree='3'] .key-label b { color: var(--mi); }
+.piano-key[data-degree='4'] .key-label b { color: var(--fa); }
+.piano-key[data-degree='5'] .key-label b { color: var(--sol); }
+.piano-key[data-degree='6'] .key-label b { color: var(--la); }
+.piano-key[data-degree='7'] .key-label b { color: var(--si); }
+
+.key-degree-bar {
+  position: absolute;
+  bottom: 0;
+  left: 16%;
+  right: 16%;
+  height: 4px;
+  border-radius: 3px 3px 0 0;
+  pointer-events: none;
+}
+
+/* ============ 首页：旋律图 ============ */
+.melody-map-section { border-block: 1px solid var(--line); }
+
+.melody-svg { width: 100%; height: auto; display: block; }
+
+.staff-line { stroke: var(--line-strong); stroke-width: 1; }
+.staff-bar { stroke: var(--ink); stroke-width: 2; }
+.clef { font-size: 58px; fill: var(--ink-soft); }
+
+.melody-note {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: note-in var(--dur-slow) var(--ease-spring) forwards;
+  animation-delay: calc(var(--i) * 90ms + 180ms);
+}
+
+@keyframes note-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.note-head { stroke-width: 2.5; transition: fill var(--dur) var(--ease-out); }
+.melody-note .note-head { stroke: var(--note-color); }
+.melody-note:hover .note-head { fill: var(--note-color); }
+.melody-note.active .note-head { fill: color-mix(in srgb, var(--note-color) 35%, var(--paper)); }
+.melody-note.done .note-head { fill: var(--note-color); }
+
+.note-stem { stroke: var(--ink); stroke-width: 2; transition: stroke var(--dur) var(--ease-out); }
+.melody-note:hover .note-stem { stroke: var(--note-color); }
+
+.note-chapter {
+  text-anchor: middle;
+  font-size: 13px;
+  fill: var(--ink-soft);
+  font-family: var(--font-body);
+}
+
+.note-title {
+  text-anchor: middle;
+  font-size: 16px;
+  font-weight: 700;
+  fill: var(--ink);
+  font-family: var(--font-display);
+  transition: fill var(--dur) var(--ease-out);
+}
+
+.melody-note:hover .note-title { fill: var(--note-color); }
+
+/* ============ 首页：体验区 ============ */
+.playground {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: 3rem;
+}
+
+.playground-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.playground-head .section-sub { margin-bottom: 0; }
+
+.playground-tip {
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  margin: 1.25rem 0 0;
+}
+
+/* ============ 章节占位页 ============ */
+.chapter-page {
+  max-width: var(--measure);
+  padding: 3rem 0 4rem;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--ink-soft);
+  margin-bottom: 2rem;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.back-link:hover { color: var(--ink); }
+
+.chapter-chip {
+  display: inline-block;
+  padding: 0.25rem 0.875rem;
+  border-radius: 999px;
+  color: var(--chapter-color);
+  border: 1px solid color-mix(in srgb, var(--chapter-color) 40%, var(--line));
+  background: color-mix(in srgb, var(--chapter-color) 8%, var(--paper));
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.chapter-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-2xl);
+  margin: 1rem 0;
+}
+
+.chapter-notice { color: var(--ink-soft); }
+
+/* ============ 音序器 ============ */
+.seq-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.seq-play.is-playing { background: var(--do); }
+
+.seq-bpm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+.seq-bpm input[type='range'] { accent-color: var(--clay); width: 9rem; }
+.seq-bpm b { font-variant-numeric: tabular-nums; min-width: 4.5rem; }
+
+.seq-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.seq-row {
+  display: grid;
+  grid-template-columns: 3.5rem repeat(var(--steps), minmax(1.75rem, 1fr));
+  gap: 4px;
+  min-width: min(44rem, 100%);
+}
+
+.seq-head .seq-beat-no {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  padding-bottom: 2px;
+}
+
+.seq-lane-label {
+  font-size: var(--text-xs);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.seq-lane-label::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lane, var(--ink-soft));
+}
+
+.seq-cell {
+  aspect-ratio: 1;
+  min-height: 30px;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.seq-cell.is-beat { border-color: var(--line-strong); }
+
+.seq-cell:hover { border-color: var(--ink-soft); }
+
+.seq-cell.is-on {
+  background: var(--lane, var(--clay));
+  border-color: transparent;
+  transform: scale(1.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--lane, var(--clay)) 35%, transparent);
+}
+
+.seq-cell.is-cursor {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 0 rgba(38, 36, 31, 0.15);
+}
+
+.seq-cell.is-on.is-cursor { transform: translateY(-3px) scale(1.08); }
+
+.seq-beat-no.is-cursor { color: var(--clay-deep); font-weight: 700; }
+
+/* ============ 跟打练习 ============ */
+.tap-trainer { text-align: center; }
+
+.tap-stage {
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.tap-stage:hover { border-color: var(--clay); }
+.tap-stage.is-countin { border-color: var(--sol); background: color-mix(in srgb, var(--sol) 6%, var(--surface)); }
+.tap-stage.is-tapped { transform: scale(0.985); background: var(--clay-wash); border-color: var(--clay); }
+
+.tap-hint { color: var(--ink-soft); font-size: var(--text-sm); margin: 0 0 1rem; }
+
+.tap-dots { display: flex; justify-content: center; gap: 0.625rem; margin-bottom: 1rem; }
+
+.tap-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  transition: background var(--dur-fast) var(--ease-spring), border-color var(--dur-fast);
+}
+
+.tap-dot.is-perfect { background: var(--fa); border-color: var(--fa); }
+.tap-dot.is-good { background: var(--mi); border-color: var(--mi); }
+.tap-dot.is-miss { background: var(--do); border-color: var(--do); }
+
+.tap-result:empty { margin: 0; }
+.tap-verdict { font-size: var(--text-md); margin: 0.25rem 0; }
+.tap-verdict b { color: var(--clay-deep); font-size: var(--text-lg); }
+.tap-note { color: var(--ink-soft); font-size: var(--text-sm); margin: 0.25rem 0 0; }
+
+.tap-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ============ 和声块（第六章） ============ */
+.diatonic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.625rem;
+}
+
+.diatonic-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.875rem 0.5rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.diatonic-btn:hover { transform: translateY(-2px); border-color: var(--dg); }
+
+.diatonic-btn.is-active {
+  border-color: var(--dg);
+  background: color-mix(in srgb, var(--dg) 10%, var(--surface));
+}
+
+.dg-roman {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-md);
+  color: var(--dg);
+}
+
+.dg-symbol { font-size: var(--text-sm); font-weight: 600; }
+.dg-degree { font-size: var(--text-xs); color: var(--ink-soft); }
+
+.prog-info { margin-bottom: 1rem; }
+.prog-name { font-weight: 700; margin: 0 0 0.25rem; }
+.prog-desc { color: var(--ink-soft); font-size: var(--text-sm); margin: 0; }
+
+.keytool-chips { margin-bottom: 1rem; }
+.keytool-fact { font-size: var(--text-sm); color: var(--ink-soft); margin: 0.75rem 0 0; }
+
+/* ============ 微课版式 ============ */
+.lesson-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  width: min(76rem, 100%);
+  margin-inline: auto;
+  padding: 2.5rem var(--gutter) 4rem;
+}
+
+.lesson-rail { position: sticky; top: 5rem; align-self: start; }
+
+.chapter-title.sm { font-size: var(--text-xl); margin: 0.75rem 0 1.25rem; }
+
+.lesson-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-list li { border-bottom: 1px solid var(--line); }
+
+.lesson-list button {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  padding: 0.75rem 0.25rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.lesson-list button:hover { color: var(--ink); }
+.lesson-list li.is-current button { color: var(--ink); font-weight: 600; }
+
+.lesson-list .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  flex: none;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.lesson-list li.is-current .dot { border-color: var(--clay); background: var(--paper); }
+.lesson-list li.is-done .dot { border-color: var(--fa); background: var(--fa); }
+
+.lesson { max-width: var(--measure); }
+
+.lesson-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-xl);
+  margin: 0 0 1.25rem;
+}
+
+.lesson-p { margin: 0 0 1.125rem; }
+
+.callout {
+  border-left: 3px solid var(--clay);
+  background: var(--clay-wash);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.875rem 1.125rem;
+  margin: 1.25rem 0;
+  font-size: var(--text-sm);
+  white-space: pre-line;
+}
+
+/* 图块（谱面/简谱/波形/演示） */
+.fig {
+  margin: 1.5rem 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.fig-caption {
+  margin: 0.875rem 0 0.25rem;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.staff-fig svg { width: 100%; height: auto; display: block; }
+
+.waves-canvas { width: 100%; height: 190px; display: block; }
+.fig:has(.waves-canvas) { padding-bottom: 0.75rem; }
+
+/* 简谱 */
+.jianpu-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  align-items: center;
+  padding: 0.375rem 0;
+}
+
+.jianpu-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+  min-width: 1.6rem;
+}
+
+.jianpu-cell b {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--jp, var(--ink));
+}
+
+.jp-dots { font-size: 0.5625rem; letter-spacing: 2px; color: var(--jp, var(--ink-soft)); font-style: normal; }
+
+/* 演示块 */
+.demo-block .piano { height: 170px; }
+
+.demo-bar { margin-top: 1rem; }
+
+/* 练习块 */
+.quiz-block {
+  margin-top: 2.25rem;
+  border-top: 3px double var(--line-strong);
+  padding-top: 1.5rem;
+}
+
+.quiz-title { font-family: var(--font-display); font-weight: 900; font-size: var(--text-md); margin: 0 0 0.375rem; }
+.quiz-sub { color: var(--ink-soft); font-size: var(--text-sm); margin: 0 0 1.25rem; }
+
+.quiz-head .quiz-count {
+  display: inline-block;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.125rem 0.625rem;
+  margin-bottom: 0.625rem;
+}
+
+.quiz-prompt { font-weight: 600; font-size: var(--text-md); margin: 0 0 0.375rem; }
+.quiz-subprompt { color: var(--ink-soft); font-size: var(--text-sm); margin: 0 0 1rem; }
+
+.quiz-staff { margin-bottom: 1rem; }
+
+.quiz-playbar { margin: 0.875rem 0; }
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.625rem;
+  margin: 1rem 0;
+}
+
+.option-btn {
+  min-height: 48px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-base);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.option-btn:hover { transform: translateY(-1px); border-color: var(--ink-soft); }
+
+.option-btn.is-right {
+  border-color: var(--fa);
+  background: color-mix(in srgb, var(--fa) 10%, var(--surface));
+  color: var(--fa);
+  font-weight: 700;
+}
+
+.option-btn.is-wrong {
+  border-color: var(--do);
+  background: color-mix(in srgb, var(--do) 8%, var(--surface));
+  color: var(--do);
+  animation: option-shake 0.32s var(--ease-out);
+}
+
+@keyframes option-shake {
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+.quiz-build .piano { height: 165px; }
+
+.quiz-feedback {
+  border-radius: var(--radius);
+  padding: 1rem 1.125rem;
+  margin: 1rem 0;
+  animation: fb-in var(--dur) var(--ease-out);
+}
+
+@keyframes fb-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.quiz-feedback.is-correct { background: color-mix(in srgb, var(--fa) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--fa) 35%, var(--line)); }
+.quiz-feedback.is-wrong { background: color-mix(in srgb, var(--do) 7%, var(--surface)); border: 1px solid color-mix(in srgb, var(--do) 30%, var(--line)); }
+
+.fb-line { margin: 0 0 0.375rem; font-weight: 700; }
+.quiz-feedback.is-correct .fb-line { color: var(--fa); }
+.quiz-feedback.is-wrong .fb-line { color: var(--do); }
+.fb-exp { margin: 0 0 0.875rem; font-size: var(--text-sm); color: var(--ink-soft); }
+
+.quiz-finish { text-align: center; padding: 1.5rem 0; color: var(--ink-soft); }
+.finish-note { font-size: 2rem; color: var(--fa); display: block; margin-bottom: 0.375rem; }
+
+.quiz-error { color: var(--do); font-size: var(--text-sm); }
+
+/* 课内导航 */
+.lesson-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-progress { color: var(--ink-soft); font-size: var(--text-sm); }
+
+.lesson-nav .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ============ 首页仪表盘 ============ */
+.dash-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.dash-stat { display: flex; flex-direction: column; align-items: center; min-width: 4.5rem; }
+.dash-stat b { font-family: var(--font-display); font-weight: 900; font-size: var(--text-xl); line-height: 1.2; color: var(--clay-deep); }
+.dash-stat b i { font-style: normal; font-size: var(--text-sm); color: var(--ink-soft); }
+.dash-stat span { font-size: var(--text-xs); color: var(--ink-soft); }
+
+.dash-review { flex: 1; min-width: 14rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.dash-review-title { font-size: var(--text-sm); color: var(--ink-soft); margin-right: 0.25rem; }
+
+.review-chip {
+  font-size: var(--text-xs);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--clay-wash);
+  color: var(--clay-deep);
+  font-weight: 600;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+.review-chip:hover { transform: translateY(-1px); }
+
+.dash-tools { display: flex; gap: 0.5rem; }
+
+.btn-sm { min-height: 36px; padding: 0 0.875rem; font-size: var(--text-xs); }
+
+/* 热力图：12 周 × 7 天 */
+.heat-wrap { margin-top: 1.5rem; }
+
+.heat-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  grid-auto-flow: column;
+  gap: 3px;
+  width: min(100%, 34rem);
+}
+
+.heat-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.heat-cell.lv1 { background: color-mix(in srgb, var(--clay) 30%, var(--line)); }
+.heat-cell.lv2 { background: color-mix(in srgb, var(--clay) 55%, var(--line)); }
+.heat-cell.lv3 { background: color-mix(in srgb, var(--clay) 80%, var(--line)); }
+.heat-cell.lv4 { background: var(--clay); }
+
+/* ============ 练耳训练场 ============ */
+.ear-page {
+  max-width: 46rem;
+  padding: 2.5rem 0 4rem;
+}
+
+.ear-tabs { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 1.5rem 0; }
+
+.ear-tab {
+  flex: 1;
+  min-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.ear-tab:hover { transform: translateY(-1px); border-color: var(--tab); }
+.ear-tab.is-active { border-color: var(--tab); background: color-mix(in srgb, var(--tab) 8%, var(--surface)); }
+.ear-tab b { color: var(--tab); font-family: var(--font-display); font-weight: 900; }
+.ear-tab span { font-size: var(--text-xs); color: var(--ink-soft); }
+
+.ear-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  margin-bottom: 1.25rem;
+}
+
+.ear-stage {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.option-btn.is-solfege { border-color: color-mix(in srgb, var(--dg) 45%, var(--line-strong)); }
+.option-btn.is-solfege:hover { border-color: var(--dg); }
+.option-btn.is-solfege.is-right { border-color: var(--dg); background: color-mix(in srgb, var(--dg) 10%, var(--surface)); color: var(--dg); }
+
+/* ============ 响应式 ============ */
+@media (max-width: 640px) {
+  .piano { height: 150px; }
+  .key-label { font-size: 0.6875rem; bottom: 8px; }
+  .key-label b { font-size: 0.8125rem; }
+  .note-title { font-size: 13px; }
+  .note-chapter { font-size: 11px; }
+  .lesson-layout {
+    grid-template-columns: 1fr;
+    padding-top: 1.5rem;
+  }
+  .lesson-rail { position: static; }
+  .lesson-list { display: flex; overflow-x: auto; gap: 0.25rem; border-top: 0; }
+  .lesson-list li { border-bottom: 0; flex: none; }
+  .lesson-list button { padding: 0.5rem 0.75rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+  .lesson-list li.is-current button { border-color: var(--clay); }
+  .lesson-list .dot { display: none; }
+  .waves-canvas { height: 150px; }
+  .jianpu-cell b { font-size: 1.375rem; }
+}

@@ -1,0 +1,15 @@
+# Rust
+core/target/
+
+# 生成的 WASM 包（由 npm run build:wasm 产出）
+web/src/wasm/
+
+# Node
+node_modules/
+web/dist/
+
+# 杂项
+*.log
+.DS_Store
+.vite/
+.zcode/

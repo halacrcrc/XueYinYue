@@ -1,0 +1,74 @@
+/* ============================================================
+   学音乐 · 设计 Token（晨光练习室 · Claude 暖纸方向）
+   颜色即乐理：唱名七色贯穿全站，永远与唱名一一对应。
+   ============================================================ */
+:root {
+  /* 底色与墨色 */
+  --paper: #F2F1EE;        /* 页面底色（暖纸白） */
+  --surface: #FAF9F6;      /* 面板/乐器表面（象牙白） */
+  --ink: #26241F;          /* 正文墨色（暖黑） */
+  --ink-soft: #6E6A5E;     /* 次级文字 */
+  --line: #E2E0D9;         /* 谱线/分隔线 */
+  --line-strong: #C9C6BC;
+
+  /* 主操作色（Claude 同族陶土色，与 do 红一饱和一灰调，可区分） */
+  --clay: #CC785C;
+  --clay-deep: #B25F3F;
+  --clay-wash: #F6E7DE;
+
+  /* 唱名七色（教学功能色：琴键/简谱/五线谱/进度共用） */
+  --do: #D9433B;
+  --re: #E8862E;
+  --mi: #E9B93C;
+  --fa: #5FA85C;
+  --sol: #3E8EC4;
+  --la: #7A63C2;
+  --si: #C25CA8;
+
+  /* 乐器色 */
+  --ivory: #FFFFFF;        /* 白键 */
+  --ebony: #26241F;        /* 黑键 */
+
+  /* 字体 */
+  --font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* 字号阶梯（1.25 倍率） */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-md: 1.325rem;
+  --text-lg: 1.6563rem;
+  --text-xl: 2.0703rem;
+  --text-2xl: 2.5879rem;
+  --text-3xl: 3.2349rem;
+
+  /* 圆角与阴影（暖调） */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow-soft: 0 1px 2px rgba(38, 36, 31, 0.05), 0 6px 18px rgba(38, 36, 31, 0.07);
+  --shadow-lift: 0 2px 4px rgba(38, 36, 31, 0.07), 0 12px 32px rgba(38, 36, 31, 0.12);
+
+  /* 动效：弹簧与缓出（质感交互动画的统一语言） */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);   /* 轻微过冲，回弹手感 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);          /* 快进缓停 */
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+
+  /* 版式 */
+  --measure: 40em;         /* 正文行长（约 40 个汉字） */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+
+/* 尊重减弱动态偏好：所有装饰动画退化为即时切换 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ease-spring: linear;
+    --ease-out: linear;
+    --dur-fast: 1ms;
+    --dur: 1ms;
+    --dur-slow: 1ms;
+  }
+}

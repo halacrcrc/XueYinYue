@@ -1,0 +1,178 @@
+/* 字体（npm 自托管，离线可用；按 unicode-range 分片加载） */
+@import '@fontsource/noto-sans-sc/400.css';
+@import '@fontsource/noto-sans-sc/500.css';
+@import '@fontsource/noto-sans-sc/700.css';
+@import '@fontsource/noto-serif-sc/700.css';
+@import '@fontsource/noto-serif-sc/900.css';
+@import './tokens.css';
+@import './components.css';
+
+/* ============ 基础 ============ */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection { background: var(--clay-wash); color: var(--clay-deep); }
+
+/* 键盘可达性：统一的焦点环 */
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ============ 顶栏 ============ */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.875rem var(--gutter);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-md);
+  letter-spacing: 0.02em;
+}
+
+.brand-mark { color: var(--do); font-size: 1.1em; transition: transform var(--dur) var(--ease-spring); }
+.brand:hover .brand-mark { transform: translateY(-2px) rotate(-8deg); }
+
+.site-nav { display: flex; gap: 0.25rem; }
+
+.nav-link {
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+
+.nav-link:hover { color: var(--ink); background: var(--surface); }
+.nav-link.is-active { color: var(--clay-deep); background: var(--clay-wash); }
+
+.engine-badge {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+.engine-badge.is-ready { border-color: var(--fa); color: var(--fa); }
+
+/* ============ 主内容 ============ */
+.site-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.home {
+  flex: 1;
+  width: min(72rem, 100%);
+  margin-inline: auto;
+}
+
+.hero {
+  padding: clamp(3rem, 9vw, 6.5rem) 0 clamp(2rem, 5vw, 3.5rem);
+  max-width: var(--measure);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
+  line-height: 1.25;
+  margin: 0 0 1rem;
+}
+
+.hero-sub {
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 2rem;
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.875rem; }
+
+/* 按钮质感：hover 轻浮 1px、按下下沉（与琴键同一套手感语言） */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;                 /* 触控目标 ≥44px */
+  padding: 0 1.5rem;
+  border-radius: var(--radius);
+  font-size: var(--text-base);
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.btn-primary {
+  background: var(--clay);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.btn-primary:hover { background: var(--clay-deep); transform: translateY(-1px); box-shadow: var(--shadow-lift); }
+.btn-primary:active { transform: translateY(1px); box-shadow: var(--shadow-soft); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn-ghost:hover { background: var(--surface); border-color: var(--ink-soft); transform: translateY(-1px); }
+.btn-ghost:active { transform: translateY(1px); }
+
+/* 课程旋律图与体验区样式见 components.css */
+
+/* ============ 页脚 ============ */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 1.5rem var(--gutter);
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 640px) {
+  .site-header { gap: 0.75rem; flex-wrap: wrap; }
+  .site-nav { order: 3; width: 100%; overflow-x: auto; }
+  .engine-badge { margin-left: auto; }
+  .hero-actions .btn { flex: 1; }
+}

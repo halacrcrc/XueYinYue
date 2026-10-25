@@ -1,0 +1,148 @@
+// 第三章 音阶：五声先行（减法教学）→ 半音全音 → 大调公式 → 移调 → 自然小调
+
+export const ch3 = {
+  id: 'ch3',
+  badge: '第三章',
+  title: '音阶',
+  colorVar: '--mi',
+  lessons: [
+    {
+      id: 'ch3-l1',
+      title: '五个音就够唱',
+      blocks: [
+        { t: 'p', text: '正式学音阶之前，先认识一套"**怎么弹都不难听**"的五个音：**C 大调五声音阶**——C、D、E、G、A，唱作 do re mi sol la，简谱 **1 2 3 5 6**。' },
+        {
+          t: 'jianpu',
+          scale: { tonic: 'C', kind: 'majorPentatonic', octave: 4 },
+          caption: '五声音阶：1 2 3 5 6（跳过了 4 和 7）。',
+        },
+        {
+          t: 'demo',
+          startMidi: 60,
+          octaves: 2,
+          scale: { tonic: 'C', kind: 'majorPentatonic', octave: 4 },
+          key: { tonic: 'C', mode: 'major' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: '听五声音阶',
+          caption: '高亮的五个白键随便乱弹、随便排序——几乎不可能难听。这就是"减法"的智慧：先去掉容易打架的音。',
+        },
+        { t: 'callout', text: '大量民歌都是五声音阶：中国的《茉莉花》、苏格兰的《友谊地久天长》、日本的《樱花》。' },
+      ],
+    },
+    {
+      id: 'ch3-l2',
+      title: '半音与全音',
+      blocks: [
+        { t: 'p', text: '键盘上**紧挨着的两个键**（不管黑白）相差一个**半音**；中间隔一个键，相差一个**全音**（= 两个半音）。半音是音乐世界最小的"标准步子"。' },
+        { t: 'p', text: '注意白键之间有两处天生的半音：**E→F** 和 **B→C**——它们中间没有黑键。其他白键之间都是全音。' },
+        {
+          t: 'demo',
+          highlight: [64, 65],
+          play: [64, 65],
+          playMode: 'melody',
+          button: 'E→F（半音）',
+          caption: 'E 和 F 紧挨着：半音，一步。',
+        },
+        {
+          t: 'demo',
+          highlight: [60, 62],
+          play: [60, 62],
+          playMode: 'melody',
+          button: 'C→D（全音）',
+          caption: 'C 和 D 中间隔着黑键 C♯：全音，两步。',
+        },
+      ],
+    },
+    {
+      id: 'ch3-l3',
+      title: '大调的公式',
+      blocks: [
+        { t: 'p', text: '大调音阶就是一条固定的"脚步配方"，从主音出发：**全 全 半 全 全 全 半**。把它套在 C 上（C 到 E、F 到 B 全是白键），一个黑键都不需要。' },
+        {
+          t: 'staff',
+          notes: [
+            { key: 'c/4', degree: 1 },
+            { key: 'd/4', degree: 2 },
+            { key: 'e/4', degree: 3 },
+            { key: 'f/4', degree: 4 },
+            { key: 'g/4', degree: 5 },
+            { key: 'a/4', degree: 6 },
+            { key: 'b/4', degree: 7 },
+            { key: 'c/5', degree: 1 },
+          ],
+          caption: 'C 大调音阶：音符按唱名七色着色。',
+        },
+        {
+          t: 'demo',
+          scale: { tonic: 'C', kind: 'major', octave: 4 },
+          key: { tonic: 'C', mode: 'major' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: '听 C 大调',
+          namesCaption: true,
+        },
+        { t: 'callout', text: '七个音级各有名字：**主音**（1）、属音（5）、导音（7）——后面讲和声会反复用到。' },
+      ],
+    },
+    {
+      id: 'ch3-l4',
+      title: '换个调：G 大调与 F 大调',
+      blocks: [
+        { t: 'p', text: '把公式搬到别的音上，就会发现有的地方"不合脚"：从 G 出发套"全全半全全全半"，第七级必须是 **F♯** 而不是 F。' },
+        {
+          t: 'demo',
+          scale: { tonic: 'G', kind: 'major', octave: 4 },
+          key: { tonic: 'G', mode: 'major' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: '听 G 大调',
+          caption: 'G 大调里唯一的黑键：F♯（简谱仍是 7）。',
+        },
+        { t: 'p', text: '同样，F 大调需要 **B♭**：从 F 出发，第四级必须降半音才符合公式。' },
+        {
+          t: 'demo',
+          scale: { tonic: 'F', kind: 'major', octave: 4 },
+          key: { tonic: 'F', mode: 'major' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: '听 F 大调',
+          caption: 'F 大调里唯一的黑键：B♭。',
+        },
+        { t: 'p', text: '**调**就是这套公式的起点。起点不同，需要的黑键就不同——但"全全半全全全半"的骨架永远一样，所以每首歌换调后听起来还是它自己。' },
+      ],
+    },
+    {
+      id: 'ch3-l5',
+      title: '自然小调',
+      blocks: [
+        { t: 'p', text: '小调是另一条配方：**全 半 全 全 半 全 全**。最顺手的是 **a 小调**——从 A 出发，恰好全是白键。' },
+        {
+          t: 'demo',
+          scale: { tonic: 'A', kind: 'naturalMinor', octave: 4 },
+          key: { tonic: 'A', mode: 'naturalMinor' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: '听 a 小调',
+          namesCaption: true,
+        },
+        { t: 'p', text: 'C 大调和 a 小调用的是**同一批白键**，只因为起点不同，气质完全两样：大调明亮、开阔；小调柔和、带一点忧郁。' },
+        {
+          t: 'demo',
+          highlight: [60, 62, 64, 65, 67, 69, 71, 72],
+          play: [60, 62, 64, 65, 67, 69, 71, 72],
+          playMode: 'melody',
+          button: '再听 C 大调对比',
+          caption: '同一批键，先大调后小调地弹，耳朵很快能分辨气质。',
+        },
+      ],
+    },
+    {
+      id: 'ch3-quiz',
+      title: '小练习',
+      blocks: [
+        { t: 'quiz', kinds: ['build-scale'], count: 2, intro: '在琴上把指定的大调音阶搭出来——这是主动回忆，比看十遍都管用。' },
+      ],
+    },
+  ],
+}
