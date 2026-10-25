@@ -3,7 +3,7 @@
 
 .section-title {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: var(--text-lg);
   margin: 0 0 0.5rem;
 }
@@ -268,7 +268,7 @@ kbd {
 
 .chapter-title {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: var(--text-2xl);
   margin: 1rem 0;
 }
@@ -451,7 +451,7 @@ kbd {
 
 .dg-roman {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: var(--text-md);
   color: var(--dg);
 }
@@ -525,7 +525,7 @@ kbd {
 
 .lesson-title {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: var(--text-xl);
   margin: 0 0 1.25rem;
 }
@@ -591,7 +591,7 @@ kbd {
 
 .jianpu-cell b {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: 1.75rem;
   color: var(--jp, var(--ink));
 }
@@ -612,7 +612,7 @@ kbd {
   padding-top: 1.5rem;
 }
 
-.quiz-title { font-family: var(--font-display); font-weight: 900; font-size: var(--text-md); margin: 0 0 0.375rem; }
+.quiz-title { font-family: var(--font-display); font-weight: 700; font-size: var(--text-md); margin: 0 0 0.375rem; }
 .quiz-sub { color: var(--ink-soft); font-size: var(--text-sm); margin: 0 0 1.25rem; }
 
 .quiz-head .quiz-count {
@@ -732,7 +732,7 @@ kbd {
 }
 
 .dash-stat { display: flex; flex-direction: column; align-items: center; min-width: 4.5rem; }
-.dash-stat b { font-family: var(--font-display); font-weight: 900; font-size: var(--text-xl); line-height: 1.2; color: var(--clay-deep); }
+.dash-stat b { font-family: var(--font-display); font-weight: 700; font-size: var(--text-xl); line-height: 1.2; color: var(--clay-deep); }
 .dash-stat b i { font-style: normal; font-size: var(--text-sm); color: var(--ink-soft); }
 .dash-stat span { font-size: var(--text-xs); color: var(--ink-soft); }
 
@@ -855,7 +855,7 @@ kbd {
 
 .ear-tab:hover { transform: translateY(-1px); border-color: var(--tab); }
 .ear-tab.is-active { border-color: var(--tab); background: color-mix(in srgb, var(--tab) 8%, var(--surface)); }
-.ear-tab b { color: var(--tab); font-family: var(--font-display); font-weight: 900; }
+.ear-tab b { color: var(--tab); font-family: var(--font-display); font-weight: 700; }
 .ear-tab span { font-size: var(--text-xs); color: var(--ink-soft); }
 
 .ear-stats {
@@ -1069,7 +1069,7 @@ kbd {
 
 .cc-title {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 700;
   font-size: var(--text-lg);
   margin: 0;
 }
