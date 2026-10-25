@@ -3,7 +3,7 @@
 //   采样层 — smplr SplendidGrandPiano（真实大钢琴采样，加载就绪后无缝接管）
 // 浏览器要求音频必须在用户手势后启动：所有发声入口都先 unlock()。
 
-import { DrumMachine, SplendidGrandPiano } from 'smplr'
+import { DrumMachine, Soundfont, SplendidGrandPiano } from 'smplr'
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -20,6 +20,8 @@ class AudioEngine {
     this.pianoReady = false
     this.drums = null
     this.drumsReady = false
+    this.guitar = null
+    this.guitarReady = false
     this.loadingStarted = false
   }
 
@@ -57,6 +59,17 @@ class AudioEngine {
     } catch (err) {
       console.warn('鼓组采样不可用，继续使用合成鼓', err)
     }
+    try {
+      // GM 音色库里的钢弦吉他（按音符流式加载）
+      this.guitar = new Soundfont(this.ctx, { instrument: 'acoustic_guitar_steel' })
+      this.guitar.ready
+        .then(() => {
+          this.guitarReady = true
+        })
+        .catch((err) => console.warn('吉他采样加载失败，继续使用合成拨弦', err))
+    } catch (err) {
+      console.warn('吉他采样不可用，继续使用合成拨弦', err)
+    }
   }
 
   /**
@@ -79,6 +92,53 @@ class AudioEngine {
     midis.forEach((m, i) => {
       this.playNote(m, { duration, velocity, time: t0 + i * stagger })
     })
+  }
+
+  /** 弹吉他单音。采样就绪走 GM 钢弦吉他，否则合成拨弦兜底。 */
+  playGuitarNote(midi, { duration = 1.8, velocity = 96, time } = {}) {
+    const ctx = this.unlock()
+    if (this.guitarReady) {
+      this.guitar.start({ note: midiToName(midi), duration, velocity, time })
+    } else {
+      this._synthPluck(ctx, midi, duration, velocity, time)
+    }
+  }
+
+  /** 吉他和弦/琶音。 */
+  playGuitarNotes(midis, { duration = 2.4, velocity = 96, stagger = 0 } = {}) {
+    const ctx = this.unlock()
+    const t0 = ctx.currentTime + 0.02
+    midis.forEach((m, i) => {
+      this.playGuitarNote(m, { duration, velocity, time: t0 + i * stagger })
+    })
+  }
+
+  /** 合成拨弦兜底：三角波基频 + 八度泛音 + 快衰减。 */
+  _synthPluck(ctx, midi, duration, velocity, time) {
+    const t = time ?? ctx.currentTime
+    const freq = 440 * Math.pow(2, (midi - 69) / 12)
+    const vol = Math.max(0.04, velocity / 127) * 0.45
+    const master = ctx.createGain()
+    master.gain.setValueAtTime(0, t)
+    master.gain.linearRampToValueAtTime(vol, t + 0.006)
+    master.gain.exponentialRampToValueAtTime(0.0001, t + Math.min(duration, 1.4))
+    const filter = ctx.createBiquadFilter()
+    filter.type = 'lowpass'
+    filter.frequency.setValueAtTime(Math.min(6500, freq * 8), t)
+    filter.frequency.exponentialRampToValueAtTime(Math.max(600, freq * 2), t + 0.5)
+    for (const [mult, amp] of [[1, 1], [2, 0.35], [3, 0.12]]) {
+      const osc = ctx.createOscillator()
+      osc.type = 'triangle'
+      osc.frequency.value = freq * mult
+      const g = ctx.createGain()
+      g.gain.value = amp
+      osc.connect(g)
+      g.connect(filter)
+      osc.start(t)
+      osc.stop(t + duration + 0.3)
+    }
+    filter.connect(master)
+    master.connect(ctx.destination)
   }
 
   /** 打一个鼓。name：kick / snare / hihat / clap。采样就绪走 TR-808，否则合成兜底。 */

@@ -6,7 +6,6 @@ import { createPiano } from '../piano.js'
 import { createFretboard } from '../fretboard.js'
 import { createSequencer } from '../sequencer.js'
 import {
-  scale as wasmScale,
   diatonic_triads as wasmDiatonic,
   progressions as wasmProgressions,
 } from '../wasm/xueyinyue-core.js'
@@ -110,7 +109,6 @@ export function renderFun(main) {
   function refreshProgression() {
     const triads = wasmDiatonic(state.tonic, 'major', 4)
     descEl.textContent = `${state.preset.nameZh}（${state.preset.degrees.map((d) => triads[d - 1].roman).join(' – ')}）：${state.preset.description}`
-    applyScaleHighlight()
   }
 
   // ---------- 乐器台 ----------
@@ -135,7 +133,6 @@ export function renderFun(main) {
       currentInstr = fretboard
     }
     applyLabel()
-    applyScaleHighlight()
   }
 
   function applyLabel() {
@@ -143,21 +140,7 @@ export function renderFun(main) {
     c.setKey(state.tonic, 'major')
     c.setLabel(labelMode)
   }
-
-  function applyScaleHighlight() {
-    const c = activeInstr === 'piano' ? piano : fretboard
-    if (!c) return
-    const dto = wasmScale(state.tonic, 'major', 4)
-    const midis = []
-    for (const n of dto.notes) {
-      for (const oct of [0, 1, 2, 3]) {
-        const m = n.midi + oct * 12
-        if (m >= 36 && m <= 96) midis.push(m)
-      }
-    }
-    c.setKey(state.tonic, 'major')
-    c.setHighlights(midis)
-  }
+  // 直接全部显示：不做事前的音阶高亮圈，音名/简谱标签本身就是全部可见的
 
   tabsEl.querySelectorAll('[data-instr]').forEach((b) => {
     b.addEventListener('click', () => {
@@ -200,11 +183,15 @@ export function renderFun(main) {
     const triad = triads[deg - 1]
     const midis = triad.notes.map((n) => n.midi)
     const barDur = (60 / state.bpm) * 4
-    audio.playNotes(midis, { duration: barDur * 0.9, velocity: 96 })
+    // 吉他模式下和声进行也走吉他音色
+    if (activeInstr === 'guitar') {
+      audio.playGuitarNotes(midis, { duration: barDur * 0.9, velocity: 96, stagger: 0.03 })
+    } else {
+      audio.playNotes(midis, { duration: barDur * 0.9, velocity: 96 })
+    }
     // 在乐器上闪亮当前和弦（唱名级数色）
     const c = activeInstr === 'piano' ? piano : fretboard
     if (c) {
-      const color = resolveVar(DEGREE_VARS[(deg - 1) % 7])
       midis.forEach((m, i) => setTimeout(() => c.flash(m, { duration: 420 }), i * 30))
     }
     state.bar += 1

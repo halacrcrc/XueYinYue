@@ -78,7 +78,7 @@ export function createFretboard(el, { label = 'name', key = null, onNote = () =>
     const hit = cells.filter((c) => c.dataset.midi === String(midi))
     hit.forEach((c) => c.classList.add('is-pressed'))
     setTimeout(() => hit.forEach((c) => c.classList.remove('is-pressed')), 200)
-    audio.playNote(midi, { velocity: 98 })
+    audio.playGuitarNote(midi, { velocity: 98 })
     onNote(midi)
   }
 

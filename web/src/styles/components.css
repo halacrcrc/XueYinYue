@@ -151,25 +151,25 @@ kbd {
   pointer-events: none;
 }
 
-/* 电脑键位提示（琴键顶部小字） */
+/* 电脑键位提示（琴键顶部小字，默认极淡，悬停钢琴时清晰） */
 .key-hint {
   position: absolute;
-  top: 8px;
+  top: 7px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   line-height: 1;
-  padding: 0.125rem 0.3rem;
-  border-radius: 4px;
-  color: var(--ink-soft);
-  background: color-mix(in srgb, var(--line) 55%, transparent);
+  color: rgba(38, 36, 31, 0.32);
   pointer-events: none;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
-.piano-key.black .key-hint {
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.14);
-}
+.piano:hover .key-hint,
+.piano:focus-within .key-hint { color: rgba(38, 36, 31, 0.62); }
+
+.piano-key.black .key-hint { color: rgba(255, 255, 255, 0.38); }
+.piano:hover .piano-key.black .key-hint,
+.piano:focus-within .piano-key.black .key-hint { color: rgba(255, 255, 255, 0.75); }
 
 /* ============ 首页：旋律图（VexFlow 真实音符） ============ */
 .melody-map-section { border-block: 1px solid var(--line); }
@@ -531,6 +531,14 @@ kbd {
 }
 
 .lesson-p { margin: 0 0 1.125rem; }
+
+/* 正文强调：Maple 粗体中文笔画易糊，用陶土色做强调代替纯加重视觉 */
+.lesson-p b,
+.callout b,
+.quiz-subprompt b,
+.section-sub b,
+.hero-sub b,
+.playground-tip b { color: var(--clay-deep); }
 
 .callout {
   border-left: 3px solid var(--clay);
@@ -917,6 +925,9 @@ kbd {
 .fun-instr-head .chips { display: inline-flex; }
 .fun-instr-tabs { gap: 0.75rem; }
 
+/* 音乐乐园：键底色条不显示（信息由彩色数字本身承载） */
+.fun-instr .key-degree-bar { display: none; }
+
 /* ---------- 吉他指板 ---------- */
 .fretboard {
   display: flex;
@@ -963,11 +974,11 @@ kbd {
   justify-content: center;
   font-size: 0.6875rem;
   font-weight: 600;
-  color: transparent;
+  color: var(--ink-soft);
   transition:
     transform var(--dur-fast) var(--ease-spring),
     box-shadow var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
+    background var(--dur-fast) var(--ease-out);
 }
 
 /* 空弦（第 0 品）用弦枕色 */
@@ -986,19 +997,20 @@ kbd {
   background: var(--line-strong);
 }
 
+/* 唱名级数着色：所有品格直接显示（简谱模式下） */
+.fb-cell[data-degree='1'] { color: var(--do); }
+.fb-cell[data-degree='2'] { color: var(--re); }
+.fb-cell[data-degree='3'] { color: var(--mi); }
+.fb-cell[data-degree='4'] { color: var(--fa); }
+.fb-cell[data-degree='5'] { color: var(--sol); }
+.fb-cell[data-degree='6'] { color: var(--la); }
+.fb-cell[data-degree='7'] { color: var(--si); }
+
+/* 高亮（音阶展示等教学场景） */
 .fb-cell.is-highlighted {
-  color: var(--ink);
   background: color-mix(in srgb, var(--clay) 14%, var(--paper));
   border-color: color-mix(in srgb, var(--clay) 45%, var(--line));
 }
-
-.fb-cell.is-highlighted[data-degree='1'] { color: var(--do); }
-.fb-cell.is-highlighted[data-degree='2'] { color: var(--re); }
-.fb-cell.is-highlighted[data-degree='3'] { color: var(--mi); }
-.fb-cell.is-highlighted[data-degree='4'] { color: var(--fa); }
-.fb-cell.is-highlighted[data-degree='5'] { color: var(--sol); }
-.fb-cell.is-highlighted[data-degree='6'] { color: var(--la); }
-.fb-cell.is-highlighted[data-degree='7'] { color: var(--si); }
 
 .fb-cell.is-pressed {
   transform: scale(0.94);
