@@ -24,6 +24,14 @@ export function createPiano(el, { startMidi = 60, octaves = 2, onNote = () => {}
     highlights: new Map(), // midi -> css color
   }
 
+  // 电脑键位提示（仅在响应键盘的钢琴上显示）：midi → 按键字符
+  const keyHints = new Map()
+  if (keyboard) {
+    KEY_ROWS.forEach((row, r) =>
+      row.forEach((ch, idx) => keyHints.set(startMidi + r * 12 + idx, ch))
+    )
+  }
+
   const total = octaves * 12 + 1
   const midis = Array.from({ length: total }, (_, i) => startMidi + i)
   const whites = midis.filter((m) => !isBlack(m))
@@ -51,6 +59,14 @@ export function createPiano(el, { startMidi = 60, octaves = 2, onNote = () => {}
     const degreeBar = document.createElement('span')
     degreeBar.className = 'key-degree-bar'
     btn.appendChild(degreeBar)
+
+    // 电脑键位提示
+    if (keyHints.has(midi)) {
+      const hint = document.createElement('span')
+      hint.className = 'key-hint'
+      hint.textContent = keyHints.get(midi)
+      btn.appendChild(hint)
+    }
 
     if (isBlack(midi)) {
       // 黑键：横跨其左侧白键的右边界
@@ -88,10 +104,21 @@ export function createPiano(el, { startMidi = 60, octaves = 2, onNote = () => {}
 
   // ---- 电脑键盘映射（可用 keyboard: false 关闭，用于多钢琴共存的页面）----
   const heldKeys = new Set()
+  // 中文输入法下 e.key 可能是 'Process' 或组合串，回退用物理键位 e.code
+  const charFromCode = (code) => {
+    if (code.startsWith('Key')) return code.slice(3).toLowerCase()
+    if (code.startsWith('Digit')) return code.slice(5)
+    return { Comma: ',', Period: '.', Semicolon: ';', Slash: '/' }[code] || null
+  }
   const onDocKey = (e) => {
     if (!keyboard) return
     if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return
-    const k = e.key.toLowerCase()
+    let k = e.key.toLowerCase()
+    if (e.key === 'Process' || k.length !== 1) {
+      const c = charFromCode(e.code)
+      if (!c) return
+      k = c
+    }
     for (let row = 0; row < KEY_ROWS.length; row++) {
       const idx = KEY_ROWS[row].indexOf(k)
       if (idx >= 0) {

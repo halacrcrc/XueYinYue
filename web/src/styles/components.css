@@ -151,6 +151,26 @@ kbd {
   pointer-events: none;
 }
 
+/* 电脑键位提示（琴键顶部小字） */
+.key-hint {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  line-height: 1;
+  padding: 0.125rem 0.3rem;
+  border-radius: 4px;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--line) 55%, transparent);
+  pointer-events: none;
+}
+
+.piano-key.black .key-hint {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.14);
+}
+
 /* ============ 首页：旋律图（VexFlow 真实音符） ============ */
 .melody-map-section { border-block: 1px solid var(--line); }
 
