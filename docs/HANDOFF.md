@@ -1,7 +1,7 @@
 # 学音乐（XueYinYue）交接文档
 
 > 本文档是活文档：**每完成一个阶段必须更新**。接手的模型/人请从这里开始。
-> 最后更新：**阶段 0–7 全部完成**（初版功能全量上线，47 个 Rust 测试全绿，生产构建通过）
+> 最后更新：2026-10-25 深夜——初版全量上线后又完成三批增强与七轮修复；**后续内容开发以 [docs/ROADMAP.md](ROADMAP.md) 为准**
 
 ## 项目一句话
 
@@ -66,6 +66,8 @@ web/    Vite + 原生 JS
 - ✅ **阶段5** 第六章全上线：diatonic（七和弦点听）、progression（I–V–vi–IV 等四种进行，钢琴逐小节联动）、keytool（8 调移调实验室）
 - ✅ **阶段6** progress.rs（掌握度/间隔重复/日历/每日目标，**47 测试全绿**）；练耳训练场 `#/ear`（调性级数[gen_tonal_ear 含 cadence 字段]/音程/和弦三模式，唱名色选项，反应计时）；首页仪表盘（连续天数/今日题数/今日复习 chips/12周热力图/导出导入）；微课作答与完成态全部接入进度系统
 - ✅ **阶段7** 移动端 390px 走查（无横向溢出）、生产构建通过
+- ✅ **三批**：**课程目录页 `#/chapters`**（8卡片+进度条，导航"课程"入口，章节侧栏"☰ 全部章节"）；**旋律图改 VexFlow 真实雕版音符**（七章节=do-si七音，未开始=空心二分/完成=实心四分，dashboard.js 现依赖 VexFlow）；贴边修复（ear/fun/chapters 页补 gutter+居中）；**全站换 Maple Mono NF CN 字体**；琴键**键位提示**（极淡+悬停显清晰，兼容中文输入法 Process 键）；演示钢琴**标签切换 chips**；正文强调改陶土色（Maple 粗体糊）；简谱八度点位置颠倒修复；**吉他音色**（GM 钢弦吉他+合成拨弦兜底）
+- ✅ **滚动兼容专项**：移除 `scroll-behavior:smooth`（部分 webview 实现失效会卡死全部滚动）；首页"先随便弹弹"改按钮+瞬时滚动；路由忽略页内锚点；练习反馈滚动同改
 
 ## 更多文档
 
@@ -73,7 +75,7 @@ web/    Vite + 原生 JS
 
 ## 待办（后续增强，非必需）
 
-- ✅ 2026-10-25 二批：**旋律图音符加厚**（4px 描边+章节色实心底）；**Gist 云同步**（首页 ☁ 面板：GitHub/Gitee 令牌 + 自动建 Gist + 合并式拉取；mergeDocs 双向取大；已端到端实测）
+- ✅ 2026-10-25 二批：**Gist 云同步**（首页 ☁ 面板：GitHub/Gitee 令牌 + 自动建 Gist + 合并式拉取；mergeDocs 双向取大；已端到端实测）
 - ✅ 2026-10-25 一批：**音乐乐园 `#/fun`**、**吉他指板 `fretboard.js`**、**自动部署**（Pages=https://halacrcrc.github.io/XueYinYue/）
 - 教学增强：节奏听辨题、和弦转位教学、五度圈工具页、更多调性（小调练耳）
 - PWA 离线：自托管 smplr 采样 + Service Worker（约 1 小时）
@@ -97,10 +99,13 @@ web/    Vite + 原生 JS
 - smplr：`SplendidGrandPiano(ctx)` 可不加 new；`piano.ready` 是 Promise；音符名科学记谱（C4=60）✓
 - IAB `fullPage` 截图会把 sticky 顶栏拼进每段，视觉分析会误报"内容重复"——走查用视口截图/clip
 - 中文字符串注意引号配对（ch2.js 曾因 `'…。"` 炸掉整页）；Vite 报错看 `/tmp/vite-dev.log`
-- 首页旋律图 `buildMelodyMap(container, progress)` 已支持进度态 `unstarted/active/done`（点音符填充色），接进度系统时用
+- 首页旋律图 `buildMelodyMap(container, progress)` 已改用 VexFlow：progress 态 `unstarted/active/done` → 空心二分/四分/实心四分音符；点击音符进章节（SVG group 上挂事件）
 - 章节完成态已迁移进统一进度文档（`localStorage['xyy:progress']`，key `chapters`）；旧 `xyy:done:*` 键在 markLessonDone 时自动迁移后删除
 - Question 对象前端会挂 `_t0`（作答起点时间）再传回 check_answer——Rust 侧 serde 默认忽略未知字段，勿加 `deny_unknown_fields`
-- 部署（静态托管，可选）：`npm run build` 后 `web/dist/` 即全静态产物（base 已设 `./`），可直接丢 GitHub Pages / Netlify / 任意静态服务器；首次加载采样需联网（smplr CDN），缓存后离线可用
+- **勿用 `scroll-behavior:smooth` 与 `scrollIntoView({behavior:'smooth'})`**：部分内嵌浏览器实现失效会卡死一切滚动；统一 `window.scrollTo(x, y)`
+- **钢琴组件陷阱**：`createPiano` 把 `.piano` 类加在传入容器自身（`el.classList.add('piano')`），所以 `.piano-mount .piano` 这种**后代选择器永远匹配不到**
+- 开发中浏览器测试若"改了代码没生效"：多为 IAB 标签页持有旧模块图（hash 跳转不重载页面），重启 vite + 硬重载标签页即可
+- 部署（静态托管，可选）：`npm run build` 后 `web/dist/` 即全静态产物（base 已设 `./`），可直接丢任意静态服务器；首次加载采样需联网（smplr CDN），缓存后离线可用
 
 ## 验证清单（每阶段跑一遍）
 
