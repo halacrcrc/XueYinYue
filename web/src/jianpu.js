@@ -12,20 +12,21 @@ export function renderJianpu(el, items, { caption } = {}) {
     const cell = document.createElement('span')
     cell.className = 'jianpu-cell'
     cell.style.setProperty('--jp', `var(${DEGREE_VARS[(it.digit - 1) % 7]})`)
-    if (it.octaveOffset < 0) {
-      const lo = document.createElement('i')
-      lo.className = 'jp-dots below'
-      lo.textContent = '·'.repeat(-it.octaveOffset)
-      cell.appendChild(lo)
-    }
-    const num = document.createElement('b')
-    num.textContent = `${it.accidental > 0 ? '♯' : it.accidental < 0 ? '♭' : ''}${it.digit}`
-    cell.appendChild(num)
+    // 列布局中先出现者在上：高八度点在数字上方、低八度点在数字下方
     if (it.octaveOffset > 0) {
       const hi = document.createElement('i')
       hi.className = 'jp-dots above'
       hi.textContent = '·'.repeat(it.octaveOffset)
       cell.appendChild(hi)
+    }
+    const num = document.createElement('b')
+    num.textContent = `${it.accidental > 0 ? '♯' : it.accidental < 0 ? '♭' : ''}${it.digit}`
+    cell.appendChild(num)
+    if (it.octaveOffset < 0) {
+      const lo = document.createElement('i')
+      lo.className = 'jp-dots below'
+      lo.textContent = '·'.repeat(-it.octaveOffset)
+      cell.appendChild(lo)
     }
     row.appendChild(cell)
   }
