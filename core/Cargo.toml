@@ -18,3 +18,8 @@ getrandom = { version = "0.2", features = ["js"] }
 [profile.release]
 opt-level = "s"
 lto = true
+
+# 新版 rustc 会产出多表 WASM，wasm-pack 自带的 wasm-opt 不识别会崩；
+# 体积本就小（gzip ~39KB），直接跳过优化
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
