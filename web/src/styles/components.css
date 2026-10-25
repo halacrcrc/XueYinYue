@@ -151,53 +151,40 @@ kbd {
   pointer-events: none;
 }
 
-/* ============ 首页：旋律图 ============ */
+/* ============ 首页：旋律图（VexFlow 真实音符） ============ */
 .melody-map-section { border-block: 1px solid var(--line); }
 
-.melody-svg { width: 100%; height: auto; display: block; }
-
-.staff-line { stroke: var(--line-strong); stroke-width: 1; }
-.staff-bar { stroke: var(--ink); stroke-width: 2; }
-.clef { font-size: 58px; fill: var(--ink-soft); }
+.melody-fig svg { width: 100%; height: auto; display: block; }
 
 .melody-note {
   cursor: pointer;
-  transform-box: fill-box;
-  transform-origin: center;
   opacity: 0;
-  transform: translateY(12px);
-  animation: note-in var(--dur-slow) var(--ease-spring) forwards;
-  animation-delay: calc(var(--i) * 90ms + 180ms);
+  animation: note-in var(--dur-slow) var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * 90ms + 150ms);
+  transition: transform var(--dur) var(--ease-spring);
+  transform-box: fill-box;
 }
+
+.melody-note:hover,
+.melody-note:focus-visible { transform: translateY(-4px); }
+
+.melody-note:focus-visible { outline: none; }
 
 @keyframes note-in {
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; }
 }
 
-/* 音符头：厚实的实心椭圆，未开始也带章节色底 */
-.note-head {
-  stroke: var(--note-color);
-  stroke-width: 4;
-  fill: color-mix(in srgb, var(--note-color) 30%, var(--paper));
-  transition: fill var(--dur) var(--ease-out);
-}
-.melody-note.active .note-head { fill: color-mix(in srgb, var(--note-color) 55%, var(--paper)); }
-.melody-note.done .note-head { fill: var(--note-color); }
-.melody-note:hover .note-head { fill: var(--note-color); }
-
-.note-stem { stroke: var(--ink); stroke-width: 3.2; transition: stroke var(--dur) var(--ease-out); }
-.melody-note:hover .note-stem { stroke: var(--note-color); }
+/* 进行中：音符整体 85% 不透明度示区分 */
+.melody-note.active .nch { opacity: 0.85; }
 
 .note-chapter {
-  text-anchor: middle;
-  font-size: 13px;
+  font-size: 14px;
   fill: var(--ink-soft);
   font-family: var(--font-body);
 }
 
 .note-title {
-  text-anchor: middle;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   fill: var(--ink);
   font-family: var(--font-display);

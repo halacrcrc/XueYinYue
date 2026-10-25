@@ -1,6 +1,8 @@
-// 课程旋律图（首页签名元素）：
-// 课程是一条沿五线谱上行的旋律，每个章节是一个音符，用各自的唱名色；
-// 加载时音符沿谱线依次"奏出"（一次性编排动画），点击进入章节。
+// 课程旋律图（首页签名元素）：用 VexFlow 真实乐谱字形渲染。
+// 七个章节 = do re mi fa sol la si 七个音，唱名色与音符一一对应；
+// 未开始 = 空心二分音符，进行中/完成 = 实心四分音符。点击进入章节。
+
+import { Formatter, Renderer, Stave, StaveNote, Voice } from 'vexflow'
 
 export const CHAPTERS = [
   { id: 'ch1', href: '#/chapter/1', label: '第一章', title: '声音与音名', colorVar: '--do' },
@@ -12,50 +14,87 @@ export const CHAPTERS = [
   { id: 'ear', href: '#/ear', label: '训练场', title: '练耳训练场', colorVar: '--si' },
 ]
 
+const NOTE_KEYS = ['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4']
+const NS = 'http://www.w3.org/2000/svg'
+
 /**
  * 渲染课程旋律图。progress: { [chapterId]: 'unstarted'|'active'|'done' }
  */
 export function buildMelodyMap(container, progress = {}) {
+  container.innerHTML = ''
+  const wrap = document.createElement('div')
+  wrap.className = 'melody-fig'
+  container.appendChild(wrap)
+
+  const colors = ['--do', '--re', '--mi', '--fa', '--sol', '--la', '--si'].map((v) =>
+    getComputedStyle(document.documentElement).getPropertyValue(v).trim()
+  )
+
   const W = 1080
-  const H = 320
-  const staffTop = 84
-  const lineGap = 16
-  const notesTop = 150 // 第一个音符的谱面位置（自下而上）
-  const stepY = 15 // 每章上行一个"音级"
-  const startX = 110
-  const gapX = 145
+  const H = 280
+  const renderer = new Renderer(wrap, Renderer.Backends.SVG)
+  renderer.resize(W, H)
+  const ctx = renderer.getContext()
 
-  let svg = `<svg class="melody-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="课程旋律图：七个章节沿五线谱上行">`
+  const stave = new Stave(30, 40, W - 60)
+  stave.addClef('treble')
+  stave.setContext(ctx).draw()
 
-  // 五线谱
-  for (let i = 0; i < 5; i++) {
-    const y = staffTop + i * lineGap
-    svg += `<line x1="36" y1="${y}" x2="${W - 36}" y2="${y}" class="staff-line" />`
-  }
-  // 起始小节线与谱号占位（用高音谱号字符，字体不支持时优雅退化）
-  svg += `<line x1="36" y1="${staffTop}" x2="36" y2="${staffTop + lineGap * 4}" class="staff-bar" />`
-  svg += `<text x="46" y="${staffTop + lineGap * 3 + 4}" class="clef">𝄞</text>`
-
-  CHAPTERS.forEach((ch, i) => {
-    const x = startX + i * gapX
-    const cy = notesTop - i * stepY
+  const notes = CHAPTERS.map((ch, i) => {
     const state = progress[ch.id] || 'unstarted'
-    const middleLine = staffTop + lineGap * 2
-    const stemUp = cy > middleLine
-    const stem = stemUp
-      ? `<line x1="${x + 11}" y1="${cy - 3}" x2="${x + 11}" y2="${cy - 48}" class="note-stem" />`
-      : `<line x1="${x - 11}" y1="${cy + 3}" x2="${x - 11}" y2="${cy + 48}" class="note-stem" />`
-    svg += `
-      <a href="${ch.href}" class="melody-note ${state}" style="--note-color: var(${ch.colorVar}); --i: ${i}">
-        <title>${ch.label} ${ch.title}</title>
-        <ellipse cx="${x}" cy="${cy}" rx="13" ry="10" transform="rotate(-20 ${x} ${cy})" class="note-head" />
-        ${stem}
-        <text x="${x}" y="${staffTop + lineGap * 4 + 46}" class="note-chapter">${ch.label}</text>
-        <text x="${x}" y="${staffTop + lineGap * 4 + 70}" class="note-title">${ch.title}</text>
-      </a>`
+    const n = new StaveNote({
+      keys: [NOTE_KEYS[i]],
+      duration: state === 'unstarted' ? 'h' : 'q', // 空心二分 / 实心四分
+      clef: 'treble',
+    })
+    n.setStyle({ fillStyle: colors[i], strokeStyle: colors[i] })
+    return n
   })
 
-  svg += '</svg>'
-  container.innerHTML = svg
-  return container
+  const voice = new Voice({ num_beats: notes.length, beat_value: 4 })
+  voice.setMode(Voice.Mode.SOFT)
+  voice.addTickables(notes)
+  new Formatter().joinVoices([voice]).format([voice], W - 170)
+
+  notes.forEach((note, i) => {
+    note.setStave(stave)
+    const group = ctx.openGroup()
+    note.setContext(ctx).draw()
+    ctx.closeGroup()
+    if (!group) return
+
+    const ch = CHAPTERS[i]
+    const state = progress[ch.id] || 'unstarted'
+    group.classList.add('melody-note', state)
+    group.style.setProperty('--i', i)
+    group.style.setProperty('--note-color', colors[i])
+    group.setAttribute('role', 'link')
+    group.setAttribute('tabindex', '0')
+    group.setAttribute('aria-label', `${ch.label} ${ch.title}`)
+
+    // 章节标签（挂进同一组，整体可点）
+    const cx = note.getAbsoluteX() + 10
+    const addText = (y, text, cls) => {
+      const t = document.createElementNS(NS, 'text')
+      t.setAttribute('x', cx)
+      t.setAttribute('y', y)
+      t.setAttribute('text-anchor', 'middle')
+      t.classList.add(cls)
+      t.textContent = text
+      group.appendChild(t)
+    }
+    addText(200, ch.label, 'note-chapter')
+    addText(226, ch.title, 'note-title')
+
+    const go = () => {
+      location.hash = ch.href
+    }
+    group.addEventListener('click', go)
+    group.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        go()
+      }
+    })
+  })
 }
