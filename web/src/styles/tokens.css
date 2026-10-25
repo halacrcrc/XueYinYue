@@ -29,9 +29,9 @@
   --ivory: #FFFFFF;        /* 白键 */
   --ebony: #26241F;        /* 黑键 */
 
-  /* 字体 */
-  --font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
-  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  /* 字体：Maple Mono NF CN（圆角等宽 + 中文 + Nerd 图标，全站主字体；Noto 兜底） */
+  --font-display: 'Maple Mono Normal NF CN', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Maple Mono Normal NF CN', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   /* 字号阶梯（1.25 倍率） */
   --text-xs: 0.8125rem;

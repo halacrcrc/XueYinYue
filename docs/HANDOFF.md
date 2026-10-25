@@ -52,7 +52,7 @@ web/    Vite + 原生 JS
 
 - 底色 `--paper #F2F1EE`（用户指定）、面板 `--surface #FAF9F6`、墨 `--ink #26241F`
 - 主操作陶土 `--clay #CC785C`；**唱名七色贯穿全站**：do`#D9433B` re`#E8862E` mi`#E9B93C` fa`#5FA85C` sol`#3E8EC4` la`#7A63C2` si`#C25CA8`
-- 字体：思源宋体900/700（标题）+ 思源黑体（正文），@fontsource 自托管
+- 字体：**Maple Mono NF CN**（全站主字体，圆角等宽+中文+Nerd 图标，MIT；Noto 兜底）。切片产物在 `web/src/fonts/maple-{400,700}/`（**已提交进仓库**，511 个 woff2 分片按 unicode-range 按需加载）；重建用 `web/scripts/build-maple-fonts.mjs`（需先下载 maple-font releases 的 NF-CN TTF，见脚本注释）
 - 动效：弹簧 `--ease-spring`、时长 120–300ms、只用 transform/opacity、prefers-reduced-motion 全退化；琴键按压 3px 下压+阴影收紧；答对绿答错红+抖动
 - 不用 SaaS 卡片堆砌；面板=表面色+细边+暖影；触控目标≥44px
 

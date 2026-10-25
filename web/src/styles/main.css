@@ -1,4 +1,6 @@
-/* 字体（npm 自托管，离线可用；按 unicode-range 分片加载） */
+/* 主字体：Maple Mono NF CN（切片，unicode-range 按需加载；Noto 作为兜底） */
+@import '../fonts/maple-400/result.css';
+@import '../fonts/maple-700/result.css';
 @import '@fontsource/noto-sans-sc/400.css';
 @import '@fontsource/noto-sans-sc/500.css';
 @import '@fontsource/noto-sans-sc/700.css';
