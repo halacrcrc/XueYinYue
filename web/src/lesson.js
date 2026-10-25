@@ -42,6 +42,7 @@ export function renderChapter(main, chapter) {
     <div class="lesson-layout">
       <aside class="lesson-rail">
         <a class="back-link" href="#/">← 首页</a>
+        <a class="back-link" href="#/chapters">☰ 全部章节</a>
         <span class="chapter-chip" style="--chapter-color: var(${chapter.colorVar})">${chapter.badge || '章节'}</span>
         <h1 class="chapter-title sm">${chapter.title}</h1>
         <ol class="lesson-list"></ol>
