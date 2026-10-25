@@ -34,7 +34,7 @@ export function renderHome(main) {
         <p class="hero-sub">从"这是什么音"到"这段和弦进行为什么好听"——每一课都能点、能听、能弹。</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#/chapter/1">从第一课开始</a>
-          <a class="btn btn-ghost" href="#playground">先随便弹弹</a>
+          <button type="button" class="btn btn-ghost" id="goto-playground">先随便弹弹</button>
         </div>
       </section>
 
@@ -208,6 +208,14 @@ export function renderHome(main) {
   const piano = createPiano(main.querySelector('.piano-mount'), {
     startMidi: 60,
     octaves: 2,
+  })
+
+  main.querySelector('#goto-playground').addEventListener('click', () => {
+    const pg = main.querySelector('#playground')
+    if (!pg) return
+    // 部分内嵌浏览器不支持平滑滚动，用瞬时滚动兼容
+    const y = pg.getBoundingClientRect().top + window.scrollY - 64
+    window.scrollTo(0, Math.max(0, y))
   })
 
   main.querySelectorAll('.chip').forEach((chip) => {

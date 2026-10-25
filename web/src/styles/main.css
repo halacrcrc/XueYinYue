@@ -12,7 +12,7 @@
 /* ============ 基础 ============ */
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* 注：不设 scroll-behavior:smooth——部分内嵌浏览器平滑滚动实现失效会连瞬时滚动一起卡死 */
 
 body {
   margin: 0;

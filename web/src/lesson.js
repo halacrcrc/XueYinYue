@@ -108,8 +108,7 @@ export function renderChapter(main, chapter) {
     }
     art.appendChild(nav)
     refreshRail()
-    mainEl.scrollIntoView({ block: 'start' })
-    window.scrollTo({ top: 0 })
+    window.scrollTo(0, 0)
   }
 
   // ---------- 块渲染 ----------
@@ -625,7 +624,8 @@ export function renderChapter(main, chapter) {
       next.addEventListener('click', nextQuestion)
       fb.appendChild(next)
       stage.appendChild(fb)
-      fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+      const fbY = fb.getBoundingClientRect().top + window.scrollY - 120
+      window.scrollTo(0, Math.max(0, fbY))
     }
 
     function renderMc(stage, q) {

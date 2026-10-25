@@ -16,6 +16,7 @@ import { ch6 } from './content/ch6.js'
 const CHAPTER_CONTENT = { 1: ch1, 2: ch2, 3: ch3, 4: ch4, 5: ch5, 6: ch6 }
 
 let currentPage = null // 当前页持有的组件（如钢琴），路由切换时销毁
+let hasRendered = false
 
 function renderChapterPage(main, id) {
   if (id === 'ear') {
@@ -43,6 +44,14 @@ function renderChapterPage(main, id) {
 
 function route() {
   const hash = location.hash || '#/'
+  // 页内锚点（如 #playground）不是路由：保留当前页面与滚动位置
+  if (!hash.startsWith('#/')) {
+    if (!hasRendered) {
+      hasRendered = true
+      currentPage = renderHome(main0())
+    }
+    return
+  }
   const main = document.querySelector('main')
   if (currentPage?.destroy) currentPage.destroy()
   currentPage = null
@@ -60,10 +69,15 @@ function route() {
     location.hash = '#/'
     return
   }
+  hasRendered = true
   // 顶部导航高亮
   document.querySelectorAll('.nav-link').forEach((a) => {
     a.classList.toggle('is-active', a.getAttribute('href') === hash)
   })
+}
+
+function main0() {
+  return document.querySelector('main')
 }
 
 async function boot() {
