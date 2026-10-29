@@ -11,9 +11,11 @@ mod note;
 mod progress;
 mod scale;
 
-pub use exercise::{check_answer, gen_question};
+pub use exercise::{check_answer, gen_question, gen_question_in_key};
 pub use progress::{
-    progress_dashboard, progress_merge_chapter, progress_new, progress_record, progress_set_goal,
+    progress_daily_finish, progress_daily_status, progress_dashboard, progress_merge_chapter,
+    progress_mistakes_view, progress_new, progress_record, progress_record_mistake,
+    progress_set_goal, progress_solve_mistake,
 };
 
 use chord::{SeventhQuality, TriadQuality};

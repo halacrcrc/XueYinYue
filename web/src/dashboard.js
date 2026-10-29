@@ -1,5 +1,6 @@
 // 课程旋律图（首页签名元素）：用 VexFlow 真实乐谱字形渲染。
-// 七个章节 = do re mi fa sol la si 七个音，唱名色与音符一一对应；
+// 八个章节 + 练耳训练场 = do re mi fa sol la si do re 九个音（do~mi 跨两个八度）：
+// 前七位用唱名七色，第七/八章（超出 do-si 教学序列）用陶土族深/浅两色区分，训练场回到 si 粉；
 // 未开始 = 空心二分音符，进行中/完成 = 实心四分音符。点击进入章节。
 
 import { Formatter, Renderer, Stave, StaveNote, Voice } from 'vexflow'
@@ -11,10 +12,12 @@ export const CHAPTERS = [
   { id: 'ch4', href: '#/chapter/4', label: '第四章', title: '音程', colorVar: '--fa' },
   { id: 'ch5', href: '#/chapter/5', label: '第五章', title: '和弦', colorVar: '--sol' },
   { id: 'ch6', href: '#/chapter/6', label: '第六章', title: '和声进行', colorVar: '--la' },
+  { id: 'ch7', href: '#/chapter/7', label: '第七章', title: '调与五度圈', colorVar: '--clay-deep' },
+  { id: 'ch8', href: '#/chapter/8', label: '第八章', title: '旋律写作', colorVar: '--clay' },
   { id: 'ear', href: '#/ear', label: '训练场', title: '练耳训练场', colorVar: '--si' },
 ]
 
-const NOTE_KEYS = ['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4']
+const NOTE_KEYS = ['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5']
 const NS = 'http://www.w3.org/2000/svg'
 
 /**
@@ -24,13 +27,18 @@ export function buildMelodyMap(container, progress = {}) {
   container.innerHTML = ''
   const wrap = document.createElement('div')
   wrap.className = 'melody-fig'
+  // VexFlow resize 会给 svg 写内联固定宽（1280px），压过 components.css 的 width:100%；
+  // 移动端不能让页面级横向溢出，改为容器内滑动（同 .lesson-list 的既有模式）
+  wrap.style.overflowX = 'auto'
   container.appendChild(wrap)
 
-  const colors = ['--do', '--re', '--mi', '--fa', '--sol', '--la', '--si'].map((v) =>
-    getComputedStyle(document.documentElement).getPropertyValue(v).trim()
-  )
+  // 与 CHAPTERS 一一对应：唱名七色 + 陶土族（第七/八章）+ si 粉（训练场）
+  const colors = [
+    '--do', '--re', '--mi', '--fa', '--sol', '--la', '--clay-deep', '--clay', '--si',
+  ].map((v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim())
 
-  const W = 1080
+  // 九个音符（含标题文字）需要比七音更宽的横向空间
+  const W = 1280
   const H = 280
   const renderer = new Renderer(wrap, Renderer.Backends.SVG)
   renderer.resize(W, H)

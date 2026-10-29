@@ -8,6 +8,7 @@ import { renderJianpu, jianpuItemsFromScale } from './jianpu.js'
 import { mountWaves } from './waves.js'
 import { createSequencer } from './sequencer.js'
 import { createTapTrainer } from './tap-trainer.js'
+import { createFifths } from './components/fifths.js'
 import * as progress from './progress.js'
 import {
   scale as wasmScale,
@@ -197,6 +198,22 @@ export function renderChapter(main, chapter) {
     }
     if (block.t === 'keytool') {
       renderKeyToolBlock(art, block)
+      return
+    }
+    if (block.t === 'fifths') {
+      // 第七章：五度圈互动（组件自带 SVG 环、调号盘与 I–IV–V–I 播放）
+      const wrap = document.createElement('figure')
+      wrap.className = 'fig'
+      const ring = document.createElement('div')
+      wrap.appendChild(ring)
+      if (block.caption) {
+        const c = document.createElement('figcaption')
+        c.className = 'fig-caption'
+        c.textContent = block.caption
+        wrap.appendChild(c)
+      }
+      art.appendChild(wrap)
+      components.push(createFifths(ring, { tonic: block.tonic || 'C', mode: block.mode || 'major' }))
       return
     }
     if (block.t === 'sequencer') {
@@ -643,6 +660,7 @@ export function renderChapter(main, chapter) {
           const responseMs = Math.round(performance.now() - (q._t0 || performance.now()))
           const result = check_answer(q, opt.key)
           progress.record(q.topic, result.correct, responseMs)
+          if (!result.correct) progress.recordMistake(q.topic, `${q.prompt}（正确答案：${result.answerLabel}）`)
           if (result.correct) {
             b.classList.add('is-right')
             if (q.play.length) audio.playNotes(q.play, { duration: 2, velocity: 100 })
@@ -690,6 +708,7 @@ export function renderChapter(main, chapter) {
         const responseMs = Math.round(performance.now() - (q._t0 || performance.now()))
         const result = check_answer(q, answer)
         progress.record(q.topic, result.correct, responseMs)
+        if (!result.correct) progress.recordMistake(q.topic, `${q.prompt}（正确答案：${result.answerLabel}）`)
         // 展示正确键位
         const correctMidis = q.answer.split(',').map(Number)
         const color = resolveVar(result.correct ? '--fa' : '--do')

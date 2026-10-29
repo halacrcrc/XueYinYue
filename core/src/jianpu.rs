@@ -54,12 +54,21 @@ pub fn note_to_jianpu(
 }
 
 /// 调内某字母的自然 accidental（由音阶模式推得）。
+///
+/// "调内应有变音"只在七声音阶成立——每个字母恰好对应一个成员，才有统一的
+/// 调号语义（如 G 大调的 F 字母应是 F#）。五声/布鲁斯跳字母且（布鲁斯）可能
+/// 两个成员共用一个字母，不定义调号：成员按自身拼写显示（C 布鲁斯的 F 显示
+/// 4、F# 显示 ♯4），非成员中性处理。
 fn letter_accidental_in_key(key: Spelled, kind: ScaleKind, letter_index: i8) -> i8 {
+    if !kind.is_heptatonic() {
+        return 0;
+    }
     let pattern = kind.pattern();
-    // 音阶第 i 级：字母 = key.letter + i，半音 = key.semitone + pattern[i]
+    // 音阶第 i 级：字母 = key.letter + letter_steps[i]（七声下即 key.letter + i），
+    // 半音 = key.semitone + pattern[i]
     let steps_from_tonic = (letter_index - key.step_index()).rem_euclid(7);
     let Some(&semi) = pattern.get(steps_from_tonic as usize) else {
-        return 0; // 非七声音阶（如五声）按自然音处理
+        return 0;
     };
     let letter_semitone = {
         use crate::note::Letter;
@@ -142,5 +151,33 @@ mod tests {
     fn solfege_names() {
         let j = note_to_jianpu(s("C"), ScaleKind::Major, 4, n("G4"));
         assert_eq!(j.solfege(), "sol");
+    }
+
+    #[test]
+    fn pentatonic_members_have_no_accidental() {
+        // 回归：C 大调五声里的 G 是 sol，不应带变音记号（曾因按下标取
+        // pattern[4]=9 算出 ♭5）
+        let j = note_to_jianpu(s("C"), ScaleKind::MajorPentatonic, 4, n("G4"));
+        assert_eq!((j.digit, j.accidental), (5, 0));
+        // 其余成员：E=3、A=6、B=7 全部无变音
+        assert_eq!(note_to_jianpu(s("C"), ScaleKind::MajorPentatonic, 4, n("E4")).accidental, 0);
+        assert_eq!(note_to_jianpu(s("C"), ScaleKind::MajorPentatonic, 4, n("A4")).accidental, 0);
+        assert_eq!(note_to_jianpu(s("C"), ScaleKind::MajorPentatonic, 4, n("B4")).accidental, 0);
+        // 不在阶内的 F：按自然音中性处理
+        assert_eq!(note_to_jianpu(s("C"), ScaleKind::MajorPentatonic, 4, n("F4")).accidental, 0);
+        // a 小调五声的 C 是 ♭3：无变音
+        assert_eq!(note_to_jianpu(s("A"), ScaleKind::MinorPentatonic, 4, n("C4")).accidental, 0);
+    }
+
+    #[test]
+    fn blues_shared_letter_disambiguation() {
+        // C 布鲁斯的 F（4）与 F#（♯4）共用一个字母：各自显示自己的记号
+        let f = note_to_jianpu(s("C"), ScaleKind::Blues, 4, n("F4"));
+        assert_eq!((f.digit, f.accidental), (4, 0));
+        let fsharp = note_to_jianpu(s("C"), ScaleKind::Blues, 4, n("F#4"));
+        assert_eq!((fsharp.digit, fsharp.accidental), (4, 1));
+        // G 大调五声没有 F：F#4 是升 7
+        let j = note_to_jianpu(s("G"), ScaleKind::MajorPentatonic, 4, n("F#4"));
+        assert_eq!((j.digit, j.accidental), (7, 1));
     }
 }

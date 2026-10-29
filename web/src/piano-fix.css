@@ -1,0 +1,163 @@
+/* ============================================================
+   钢琴体验修复 · piano.js 专用样式
+   1) 键位映射浮层（? 开 / Esc 关）：role=dialog，焦点圈定
+   2) 只用设计 Token（tokens.css），动效只用 transform/opacity，
+      prefers-reduced-motion 由 Token 层自动退化（时长→1ms）
+   注：.piano 的 touch-action:none / user-select:none 已在
+   components.css 提供，这里不重复。
+   ============================================================ */
+
+/* ---- 遮罩与面板 ---- */
+.kb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000; /* 盖过顶栏 z-index:10 */
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: color-mix(in srgb, var(--ink) 42%, transparent);
+  backdrop-filter: blur(4px);
+  animation: kb-fade var(--dur) var(--ease-out);
+}
+
+.kb-overlay[hidden] { display: none; }
+
+.kb-panel {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: min(86vh, 86dvh);
+  overflow: auto;
+  padding: 1.5rem 1.5rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lift);
+  animation: kb-pop var(--dur) var(--ease-spring);
+}
+
+.kb-panel:focus { outline: none; } /* 面板本体不画环，焦点在关闭按钮上走全局 :focus-visible */
+
+/* ---- 关闭按钮：触控目标 ≥44px ---- */
+.kb-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.kb-close:hover { color: var(--ink); border-color: var(--line-strong); background: var(--paper); }
+
+/* ---- 文案 ---- */
+.kb-title {
+  margin: 0 52px 0.25rem 0;
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--ink);
+}
+.kb-sub {
+  margin: 0 0 1rem;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+/* ---- 两排键位图 ---- */
+.kb-row-group { margin-block: 0.85rem; }
+
+.kb-row-label {
+  margin-bottom: 0.45rem;
+  font-size: var(--text-xs);
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+
+.kb-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kb-cap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 40px;
+  padding: 7px 6px 6px;
+  background: var(--ivory);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 0 rgba(38, 36, 31, 0.08);
+}
+.kb-cap kbd {
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+.kb-cap > span {
+  font-size: var(--text-xs);
+  line-height: 1;
+  color: var(--ink-soft);
+}
+
+/* 黑键位（升音）：仿琴键的深色键帽 */
+.kb-cap.is-black {
+  background: var(--ebony);
+  border-color: var(--ebony);
+}
+.kb-cap.is-black kbd { color: var(--paper); }
+.kb-cap.is-black > span { color: rgba(255, 255, 255, 0.62); }
+
+/* ---- 页脚提示 ---- */
+.kb-foot {
+  margin: 1.1rem 0 0;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+.kb-foot kbd {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 1px 6px;
+  background: var(--ivory);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+/* ---- 动效：只用 transform/opacity ---- */
+@keyframes kb-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes kb-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- 窄屏：键帽收紧防溢出 ---- */
+@media (max-width: 480px) {
+  .kb-panel { padding: 1.15rem 1rem 1rem; }
+  .kb-cap { min-width: 32px; padding: 6px 4px 5px; }
+  .kb-cap kbd { font-size: var(--text-sm); }
+}

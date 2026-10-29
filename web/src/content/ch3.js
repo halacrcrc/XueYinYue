@@ -1,4 +1,5 @@
-// 第三章 音阶：五声先行（减法教学）→ 半音全音 → 大调公式 → 移调 → 自然小调
+// 第三章 音阶：五声先行（减法教学）→ 半音全音 → 大调公式 → 换调（G/F）→ 自然小调
+//   → 关系大小调 → 同主音大小调 → 布鲁斯 → 移调初步 → 小练习
 
 export const ch3 = {
   id: 'ch3',
@@ -13,7 +14,16 @@ export const ch3 = {
         { t: 'p', text: '正式学音阶之前，先认识一套"**怎么弹都不难听**"的五个音：**C 大调五声音阶**——C、D、E、G、A，唱作 do re mi sol la，简谱 **1 2 3 5 6**。' },
         {
           t: 'jianpu',
-          scale: { tonic: 'C', kind: 'majorPentatonic', octave: 4 },
+          // 引擎对非七声音阶的字母→级数映射会算错变音记号（G 曾显示为 ♭5），
+          // 这里直接给正确项；根因修复见 core/jianpu.rs letter_accidental_in_key。
+          items: [
+            { digit: 1, octaveOffset: 0, accidental: 0, solfege: 'do' },
+            { digit: 2, octaveOffset: 0, accidental: 0, solfege: 're' },
+            { digit: 3, octaveOffset: 0, accidental: 0, solfege: 'mi' },
+            { digit: 5, octaveOffset: 0, accidental: 0, solfege: 'sol' },
+            { digit: 6, octaveOffset: 0, accidental: 0, solfege: 'la' },
+            { digit: 1, octaveOffset: 1, accidental: 0, solfege: 'do' },
+          ],
           caption: '五声音阶：1 2 3 5 6（跳过了 4 和 7）。',
         },
         {
@@ -135,6 +145,102 @@ export const ch3 = {
           button: '再听 C 大调对比',
           caption: '同一批键，先大调后小调地弹，耳朵很快能分辨气质。',
         },
+      ],
+    },
+    {
+      id: 'ch3-l6',
+      title: '关系大小调：同一批键，两个家',
+      blocks: [
+        { t: 'p', text: '上一课的结尾藏着一个秘密：C 大调和 a 小调，用的是**完全同一批白键**。既然音都一样，差别在哪？在**家**——你觉得哪个音最安稳，哪个音就是主音。家在 C，它就是 C 大调；家在 A，它就是 a 小调。这样共用一批键的搭档，互称**关系大小调**。' },
+        {
+          t: 'demo',
+          highlight: [62, 64, 65, 67, 69, 71, 72],
+          play: [62, 64, 65, 67, 69, 71, 72],
+          playMode: 'melody',
+          key: { tonic: 'C', mode: 'major' },
+          label: 'jianpu',
+          button: '从 re 爬到 do',
+          caption: '同样的白键一路向上，稳稳落回 C：落点在哪，家就在哪。这是 C 大调。',
+        },
+        {
+          t: 'demo',
+          highlight: [60, 62, 64, 65, 67, 69],
+          play: [60, 62, 64, 65, 67, 69],
+          playMode: 'melody',
+          key: { tonic: 'C', mode: 'major' },
+          label: 'jianpu',
+          button: '只走到 la 停住',
+          caption: '同样的键，停在 la（A）上——是不是有点"还没唱完"，但"家"已经悄悄挪了过去？这就是 a 小调的落点。',
+        },
+        { t: 'callout', text: '找关系小调的口诀：**看大调的第六级**。C 的第六级是 A → a 小调；G 的第六级是 E → e 小调；F 的第六级是 D → d 小调。反过来看，小调的**第三级**就是它的关系大调（a 的第三级是 C）。' },
+      ],
+    },
+    {
+      id: 'ch3-l7',
+      title: '同主音大小调：家不变，键变了',
+      blocks: [
+        { t: 'p', text: '关系大小调是"换家不换键"。现在反过来：**家不动，键要换**。C 大调和 c 小调的主音都是 C——这样的搭档叫**同主音大小调**。从 C 大调走到 c 小调，只需把 **3、6、7 三级各降半音**：E→E♭、A→A♭、B→B♭。' },
+        {
+          t: 'demo',
+          scale: { tonic: 'C', kind: 'major', octave: 4 },
+          key: { tonic: 'C', mode: 'major' },
+          label: 'jianpu',
+          playMode: 'melody',
+          button: 'C 大调（全白键）',
+          caption: 'C 大调：七个白键，明亮开阔。',
+        },
+        {
+          t: 'demo',
+          scale: { tonic: 'C', kind: 'naturalMinor', octave: 4 },
+          key: { tonic: 'C', mode: 'naturalMinor' },
+          label: 'name',
+          playMode: 'melody',
+          button: 'c 小调（亮出三个黑键）',
+          caption: 'c 自然小调：3、6、7 三个白键换成了左边的黑键，气质立刻转暗。键上标的 D♯、G♯、A♯ 就是 E♭、A♭、B♭——同一个键，两种写法。',
+          namesCaption: true,
+        },
+        { t: 'callout', text: '三个降音里，**降 3（E♭）最关键**：主音上面的第三个音是 E 还是 E♭，基本决定了"亮"还是"暗"；降 6 和降 7 负责把忧郁铺满整条音阶。' },
+      ],
+    },
+    {
+      id: 'ch3-l8',
+      title: '布鲁斯音阶：多出来的酸味',
+      blocks: [
+        { t: 'p', text: '前面学音阶都在做减法——去掉容易打架的音。布鲁斯反着来：它的骨架**小调五声音阶**是 1、♭3、4、5、♭7（在 C 上就是 C、E♭、F、G、B♭），然后**再塞回一个音**，卡在 4 和 5 的正中间，记作**降 5**——F 和 G 之间那个键，写作 F♯ 或 G♭ 都行。就为这一个不站队的音，世上多了一种叫布鲁斯的音乐。' },
+        {
+          t: 'demo',
+          scale: { tonic: 'C', kind: 'blues', octave: 4 },
+          key: { tonic: 'C', mode: 'blues' },
+          label: 'name',
+          playMode: 'melody',
+          button: '听 C 布鲁斯',
+          caption: 'C 布鲁斯：C、E♭、F、F♯、G、B♭——F♯（G♭）就是那个降 5。',
+          namesCaption: true,
+        },
+        {
+          t: 'demo',
+          highlight: [65, 66, 67],
+          play: [65, 66, 67],
+          playMode: 'melody',
+          button: '尝一口降 5',
+          caption: 'F → F♯ → G：三个音挤在两步里。中间那一下"挤"，就是布鲁斯酸味的全部来源。',
+        },
+        { t: 'callout', text: '记法一句话：**布鲁斯 = 小调五声 + 降 5**。吉他手即兴最爱这六个音——随便弹都带味，因为降 5 天生不打算"解决"到哪儿去。' },
+      ],
+    },
+    {
+      id: 'ch3-l9',
+      title: '移调初步：整首歌搬个家',
+      blocks: [
+        { t: 'p', text: '前面试过把大调公式从 C 搬到 G、F。把这个动作说正式一点，就叫**移调**：主音换成谁，"全全半全全全半"就套在谁身上，一步不打折——套 G 冒出 F♯，套 F 冒出 B♭。谱面变了，但每个音的**级数**（1 2 3 4 5 6 7 的相对关系）纹丝不动。' },
+        { t: 'p', text: '移调是音乐圈的日常：歌太高唱不上去，整体降几个半音再唱，还是同一首歌；乐队为了迁就歌手或乐器换调，旋律的级数关系照抄即可。**记住的不是"哪个键"，而是"第几级"**——级数在手，移调就是搬家。' },
+        {
+          t: 'keytool',
+          tonic: 'C',
+          tonics: ['C', 'G', 'D', 'F', 'Bb'],
+          caption: '切换主音，看音阶和黑键怎么搬家。简谱数字永远在新家从头数——1 还是那个"家"。',
+        },
+        { t: 'quiz', kinds: ['build-scale'], count: 2, intro: '搬家演练：在琴上把指定的大调音阶搭出来。先默念"全全半全全全半"，再决定要按哪些黑键。' },
       ],
     },
     {

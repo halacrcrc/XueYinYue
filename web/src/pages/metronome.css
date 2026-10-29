@@ -1,0 +1,120 @@
+/* ============================================================
+   节拍器页 · 模块私有样式（只属于本模块，勿改 components.css）
+   颜色/圆角/阴影/缓动一律引用 tokens.css 的设计 Token；
+   动效只用 transform/opacity，prefers-reduced-motion 由 Token 统一退化（--dur* → 1ms）。
+   ============================================================ */
+
+/* 页面骨架：与其他工具页同款贴边修复（gutter + 居中），宽度对齐 ear 页 */
+.metro-page {
+  width: min(40rem, 100%);
+  margin-inline: auto;
+  padding: 2.5rem var(--gutter) 4rem;
+}
+
+/* 主面板：表面色 + 细边 + 暖影（不做 SaaS 卡片堆砌） */
+.metro-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 2rem clamp(1rem, 4vw, 2.5rem) 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* ---- 拍点行 ---- */
+.metro-dots {
+  display: flex;
+  gap: clamp(0.5rem, 3vw, 1.5rem);
+  padding-top: 0.25rem;
+}
+
+.metro-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 44px; /* 注视/触控节奏目标 ≥44px */
+}
+
+.metro-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--line-strong);
+  transform: scale(0.82);
+  transition:
+    transform var(--dur) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.metro-slot em {
+  font-style: normal;
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+/* 颜色语义（唱名七色）：do 红=重音（底鼓·低），sol 蓝=弱拍（踩镲·高） */
+.metro-slot.is-accent .metro-dot { border-color: var(--do); }
+.metro-slot.is-accent em { color: var(--do); }
+.metro-slot:not(.is-accent) .metro-dot { border-color: var(--sol); }
+.metro-slot:not(.is-accent) em { color: var(--sol); }
+
+/* 当前拍闪点：放大 + 实心 + 染色晕（只用 transform/box-shadow 过渡） */
+.metro-slot.is-now .metro-dot {
+  transform: scale(1.12);
+  background: var(--do);
+  border-color: var(--do);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--do) 18%, transparent);
+}
+.metro-slot.is-now:not(.is-accent) .metro-dot {
+  background: var(--sol);
+  border-color: var(--sol);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--sol) 18%, transparent);
+}
+.metro-slot.is-now em { color: var(--ink); }
+
+/* ---- 走带：开始/停止 + BPM 滑杆（复用 .btn / .seq-bpm 共享类） ---- */
+.metro-transport {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* 与音序器播放态同款：播放中按钮转 do 红 */
+.metro-play.is-playing { background: var(--do); }
+
+/* ---- 拍号 chips ---- */
+.metro-timesig {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.metro-label {
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+/* .chip 基类仅 36px 高：本模块内提到 ≥44px 触控目标 */
+.metro-timesig .chip {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.375rem 1.25rem;
+}
+
+.metro-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+  text-align: center;
+}

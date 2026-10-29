@@ -6,14 +6,20 @@ import { renderChapter } from './lesson.js'
 import { renderEar } from './pages/ear.js'
 import { renderFun } from './pages/fun.js'
 import { renderChapters } from './pages/chapters.js'
+import { renderDaily } from './pages/daily.js'
+import { renderMistakes } from './pages/mistakes.js'
+import { renderQuery } from './pages/query.js'
+import { renderMetronome } from './pages/metronome.js'
 import { ch1 } from './content/ch1.js'
 import { ch2 } from './content/ch2.js'
 import { ch3 } from './content/ch3.js'
 import { ch4 } from './content/ch4.js'
 import { ch5 } from './content/ch5.js'
 import { ch6 } from './content/ch6.js'
+import { ch7 } from './content/ch7.js'
+import { ch8 } from './content/ch8.js'
 
-const CHAPTER_CONTENT = { 1: ch1, 2: ch2, 3: ch3, 4: ch4, 5: ch5, 6: ch6 }
+const CHAPTER_CONTENT = { 1: ch1, 2: ch2, 3: ch3, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 8: ch8 }
 
 let currentPage = null // 当前页持有的组件（如钢琴），路由切换时销毁
 let hasRendered = false
@@ -37,7 +43,7 @@ function renderChapterPage(main, id) {
       <a class="back-link" href="#/">← 返回首页</a>
       <span class="chapter-chip" style="--chapter-color: var(${ch.colorVar})">${ch.label}</span>
       <h1 class="chapter-title">${ch.title}</h1>
-      <p class="chapter-notice">这一章正在建设中。第一、三、四、五章已经可以学了。</p>
+      <p class="chapter-notice">这一章还在谱曲中。第一到八章已经可以学了。</p>
     </div>`
   return null
 }
@@ -63,6 +69,14 @@ function route() {
     currentPage = renderChapterPage(main, hash.split('/').pop())
   } else if (hash.startsWith('#/fun')) {
     currentPage = renderFun(main)
+  } else if (hash.startsWith('#/daily')) {
+    currentPage = renderDaily(main)
+  } else if (hash.startsWith('#/mistakes')) {
+    currentPage = renderMistakes(main)
+  } else if (hash.startsWith('#/query')) {
+    currentPage = renderQuery(main)
+  } else if (hash.startsWith('#/metronome')) {
+    currentPage = renderMetronome(main)
   } else if (hash.startsWith('#/ear')) {
     currentPage = renderChapterPage(main, 'ear')
   } else {

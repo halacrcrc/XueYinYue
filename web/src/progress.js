@@ -6,6 +6,11 @@ import {
   progress_dashboard,
   progress_merge_chapter,
   progress_set_goal,
+  progress_record_mistake,
+  progress_solve_mistake,
+  progress_mistakes_view,
+  progress_daily_finish,
+  progress_daily_status,
 } from './wasm/xueyinyue-core.js'
 
 const KEY = 'xyy:progress'
@@ -82,12 +87,49 @@ export function getDoc() {
 
 export function getDashboard() {
   doc = doc ?? loadDoc()
-  return progress_dashboard(doc, todayStr())
+  // DashboardDto.chapter_counts 是 HashMap → serde-wasm-bindgen 给 JS Map，方括号取值恒 undefined；
+  // 必须 toPlain 转普通对象（同 getDoc），否则首页旋律图与目录页进度永远不亮
+  return toPlain(progress_dashboard(doc, todayStr()))
 }
 
 export function setDailyGoal(goal) {
   doc = progress_set_goal(doc ?? loadDoc(), goal)
   saveDoc(doc)
+}
+
+// ============ 错题本 ============
+
+/** 记录一条错题（Rust 按 topic + 题面摘要去重、累计次数），返回更新后的文档。 */
+export function recordMistake(topic, summary) {
+  doc = progress_record_mistake(doc ?? loadDoc(), topic, String(summary ?? ''), todayStr())
+  saveDoc(doc)
+  return doc
+}
+
+/** 重练答对：移除该条错题（id 由错题视图给出，幂等）。 */
+export function solveMistake(id) {
+  doc = progress_solve_mistake(doc ?? loadDoc(), id)
+  saveDoc(doc)
+  return doc
+}
+
+/** 错题本视图：Rust 已按知识点分组排序（数组结构，无需 toPlain）。 */
+export function getMistakesView() {
+  return progress_mistakes_view(doc ?? loadDoc())
+}
+
+// ============ 每日挑战 ============
+
+/** 每日挑战完成：记录当日最好成绩（同天重考取更高分）。 */
+export function recordDailyResult(correct, total) {
+  doc = progress_daily_finish(doc ?? loadDoc(), correct, total, todayStr())
+  saveDoc(doc)
+  return doc
+}
+
+/** 每日挑战状态：done / 当日成绩 / 小结 / 可用题型池。 */
+export function getDailyStatus() {
+  return progress_daily_status(doc ?? loadDoc(), todayStr())
 }
 
 /** 导出为 JSON 文本（备份）。 */
@@ -140,11 +182,25 @@ export function mergeDocs(a, b) {
   for (const [k, arr] of Object.entries(b.chapters || {})) {
     chapters[k] = [...new Set([...(chapters[k] || []), ...arr])].sort((x, y) => x - y)
   }
+  // 错题本：按稳定 id 去重，冲突保留累计次数更多的一份
+  const mistakes = [...(a.mistakes || [])]
+  for (const m of b.mistakes || []) {
+    const i = mistakes.findIndex((x) => x.id === m.id)
+    if (i < 0) mistakes.push(m)
+    else if ((m.count || 0) > (mistakes[i].count || 0)) mistakes[i] = m
+  }
+  // 每日挑战：同一天保留正确数更多的成绩
+  const daily = { ...(a.daily || {}) }
+  for (const [k, v] of Object.entries(b.daily || {})) {
+    if (!daily[k] || (v.correct || 0) > (daily[k].correct || 0)) daily[k] = v
+  }
   return {
     version: Math.max(a.version || 1, b.version || 1),
     days,
     topics,
     chapters,
+    mistakes,
+    daily,
     dailyGoal: Math.max(a.dailyGoal || 15, b.dailyGoal || 15),
   }
 }

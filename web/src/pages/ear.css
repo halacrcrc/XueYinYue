@@ -1,0 +1,86 @@
+/* ============================================================
+   练耳训练场 · 设置面板（仅 ear.js 模块内 import，不进 components.css）
+   颜色/圆角/阴影/动效时长全部取自 styles/tokens.css；
+   本面板无装饰动画，prefers-reduced-motion 下无需退化；
+   滑杆与下拉的触控目标均 ≥ 44px。
+   ============================================================ */
+
+.ear-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.1rem 1.75rem;
+  margin-top: 1rem;
+  padding: 0.4rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.ear-setting {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px; /* 触控目标下限 */
+}
+
+.ear-setting-name {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.ear-range {
+  width: clamp(7rem, 24vw, 11rem);
+  height: 44px; /* 触控高度；滑轨在盒内垂直居中 */
+  margin: 0;
+  accent-color: var(--clay);
+  cursor: pointer;
+}
+
+.ear-setting-val {
+  min-width: 3.4em;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ear-key {
+  min-height: 44px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--ivory);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.ear-range:focus-visible,
+.ear-key:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+
+/* 窄屏：三项换行铺开，滑杆吃满剩余宽度 */
+@media (max-width: 560px) {
+  .ear-settings {
+    gap: 0 1.25rem;
+    padding: 0.25rem 0.9rem;
+  }
+  .ear-setting {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+  .ear-range {
+    flex: 1;
+    width: auto;
+    margin-left: 0.75rem;
+  }
+  .ear-setting-val {
+    min-width: 2.8em;
+  }
+}

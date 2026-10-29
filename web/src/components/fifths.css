@@ -1,0 +1,151 @@
+/* ============================================================
+   五度圈组件（第七章）· 模块私有样式（只属于本模块，勿改 components.css）
+   颜色/圆角/缓动一律引用 tokens.css 的设计 Token；
+   动效只用 fill/transform/opacity，prefers-reduced-motion 由 Token 统一退化（--dur* → 1ms）。
+   ============================================================ */
+
+.fifths {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.fifths-mount {
+  width: 100%;
+  max-width: 540px;
+}
+
+.fifths-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fifths-svg text {
+  font-family: var(--font-body);
+  fill: var(--ink);
+}
+
+/* ---- 扇区：外环大调 / 内环关系小调 ---- */
+.fifths-sector {
+  cursor: pointer;
+  outline: none;
+}
+
+.fifths-sector path {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1;
+  transition:
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
+.fifths-sector:hover path {
+  fill: color-mix(in srgb, var(--clay) 9%, var(--surface));
+  stroke: var(--line-strong);
+}
+
+/* 键盘可达：focus 与 hover 同等醒目 */
+.fifths-sector:focus-visible path {
+  stroke: var(--clay);
+  stroke-width: 2.5;
+}
+
+.fifths-sector.is-active path {
+  fill: color-mix(in srgb, var(--clay) 16%, var(--surface));
+  stroke: var(--clay);
+}
+
+.fifths-mj-label {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.fifths-sig-mini {
+  font-size: 12.5px;
+  fill: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.fifths-mn-label {
+  font-size: 14.5px;
+  fill: var(--ink-soft);
+}
+
+.fifths-sector.is-active .fifths-mj-label {
+  fill: var(--clay-deep);
+}
+
+/* ---- 色环：十二音位（点亮 = 音阶的七个音）---- */
+.fifths-pc circle {
+  fill: var(--paper);
+  stroke: var(--line);
+  stroke-width: 1.5;
+  transition:
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
+.fifths-pc text {
+  font-size: 11.5px;
+  fill: var(--line-strong);
+  font-weight: 600;
+  transition: fill var(--dur-fast) var(--ease-out);
+}
+
+.fifths-pc.is-lit text {
+  fill: var(--ink);
+}
+
+.fifths-pc.is-tonic text {
+  fill: #fff; /* 主音实心红点（--do）上的白字 */
+  font-weight: 700;
+}
+
+/* ---- 中心信息盘 ---- */
+.fifths-c-tonic {
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.fifths-c-mode {
+  font-size: 15px;
+  fill: var(--ink-soft);
+}
+
+.fifths-c-sig {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--clay-deep);
+}
+
+.fifths-c-rel {
+  font-size: 12.5px;
+  fill: var(--ink-soft);
+}
+
+/* ---- 播放条 ---- */
+.fifths-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.875rem;
+  width: 100%;
+}
+
+.fifths-play {
+  min-height: 44px; /* 触控目标 ≥44px */
+}
+
+.fifths-status {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  text-align: center;
+  min-height: 1.5em;
+}

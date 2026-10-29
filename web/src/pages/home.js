@@ -9,8 +9,10 @@ import { ch3 } from '../content/ch3.js'
 import { ch4 } from '../content/ch4.js'
 import { ch5 } from '../content/ch5.js'
 import { ch6 } from '../content/ch6.js'
+import { ch7 } from '../content/ch7.js'
+import { ch8 } from '../content/ch8.js'
 
-const LESSON_TOTALS = { ch1: ch1, ch2: ch2, ch3: ch3, ch4: ch4, ch5: ch5, ch6: ch6 }
+const LESSON_TOTALS = { ch1: ch1, ch2: ch2, ch3: ch3, ch4: ch4, ch5: ch5, ch6: ch6, ch7: ch7, ch8: ch8 }
 
 const TOPIC_LABELS = {
   'note-name': '认音名',
@@ -89,7 +91,7 @@ export function renderHome(main) {
 
       <section class="section melody-map-section" aria-label="课程旋律图">
         <h2 class="section-title">课程是一条旋律</h2>
-        <p class="section-sub">七个章节沿五线谱上行，点亮的音符是你的进度。点击任意音符进入章节。</p>
+        <p class="section-sub">八个章节加练耳训练场，沿五线谱一路上行；点亮的音符是你的进度。点击任意音符进入。</p>
         <div class="melody-map"></div>
         <div class="heat-wrap" aria-label="学习热力图"></div>
       </section>
