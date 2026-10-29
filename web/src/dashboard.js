@@ -14,10 +14,12 @@ export const CHAPTERS = [
   { id: 'ch6', href: '#/chapter/6', label: '第六章', title: '和声进行', colorVar: '--la' },
   { id: 'ch7', href: '#/chapter/7', label: '第七章', title: '调与五度圈', colorVar: '--clay-deep' },
   { id: 'ch8', href: '#/chapter/8', label: '第八章', title: '旋律写作', colorVar: '--clay' },
+  { id: 'ch9', href: '#/chapter/9', label: '第九章', title: '对位入门', colorVar: '--olive' },
+  { id: 'ch10', href: '#/chapter/10', label: '第十章', title: '曲式入门', colorVar: '--teal' },
   { id: 'ear', href: '#/ear', label: '训练场', title: '练耳训练场', colorVar: '--si' },
 ]
 
-const NOTE_KEYS = ['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5']
+const NOTE_KEYS = ['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5']
 const NS = 'http://www.w3.org/2000/svg'
 
 /**
@@ -34,11 +36,11 @@ export function buildMelodyMap(container, progress = {}) {
 
   // 与 CHAPTERS 一一对应：唱名七色 + 陶土族（第七/八章）+ si 粉（训练场）
   const colors = [
-    '--do', '--re', '--mi', '--fa', '--sol', '--la', '--clay-deep', '--clay', '--si',
+    '--do', '--re', '--mi', '--fa', '--sol', '--la', '--clay-deep', '--clay', '--olive', '--teal', '--si',
   ].map((v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim())
 
-  // 九个音符（含标题文字）需要比七音更宽的横向空间
-  const W = 1280
+  // 十一个音符（含标题文字）需要更宽的横向空间
+  const W = 1400
   const H = 280
   const renderer = new Renderer(wrap, Renderer.Backends.SVG)
   renderer.resize(W, H)

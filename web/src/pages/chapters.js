@@ -10,8 +10,10 @@ import { ch5 } from '../content/ch5.js'
 import { ch6 } from '../content/ch6.js'
 import { ch7 } from '../content/ch7.js'
 import { ch8 } from '../content/ch8.js'
+import { ch9 } from '../content/ch9.js'
+import { ch10 } from '../content/ch10.js'
 
-const CONTENT = { ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8 }
+const CONTENT = { ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10 }
 
 const DESCRIPTIONS = {
   ch1: '声音是振动、钢琴的地图、七个音名、唱名与简谱',

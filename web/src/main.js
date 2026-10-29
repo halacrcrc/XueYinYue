@@ -18,8 +18,10 @@ import { ch5 } from './content/ch5.js'
 import { ch6 } from './content/ch6.js'
 import { ch7 } from './content/ch7.js'
 import { ch8 } from './content/ch8.js'
+import { ch9 } from './content/ch9.js'
+import { ch10 } from './content/ch10.js'
 
-const CHAPTER_CONTENT = { 1: ch1, 2: ch2, 3: ch3, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 8: ch8 }
+const CHAPTER_CONTENT = { 1: ch1, 2: ch2, 3: ch3, 4: ch4, 5: ch5, 6: ch6, 7: ch7, 8: ch8, 9: ch9, 10: ch10 }
 
 let currentPage = null // 当前页持有的组件（如钢琴），路由切换时销毁
 let hasRendered = false

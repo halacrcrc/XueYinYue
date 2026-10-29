@@ -270,7 +270,7 @@ export function renderChapter(main, chapter) {
       const dto = wasmScale(block.scale.tonic, block.scale.kind || 'major', block.scale.octave ?? 4)
       info = {
         midis: dto.notes.map((n) => n.midi),
-        names: dto.notes.map((n) => n.spelled ? n.name : n.name),
+        names: dto.notes.map((n) => n.name),
         jianpuItems: jianpuItemsFromScale(dto),
       }
     }
@@ -337,6 +337,23 @@ export function renderChapter(main, chapter) {
     btn.addEventListener('click', () => {
       let seq = block.play ?? info?.midis ?? []
       const mode = block.playMode ?? 'melody'
+      // 双声部：voices = [上声部 midis, 下声部 midis]，逐拍并行播放（对位/曲式示范）
+      if (block.voices) {
+        const step = block.stepMs ?? 420
+        const len = Math.max(...block.voices.map((v) => v.length))
+        for (let i = 0; i < len; i++) {
+          setTimeout(() => {
+            block.voices.forEach((v, vi) => {
+              const m = v[i]
+              if (m == null) return
+              audio.playNote(m, { duration: (step / 1000) * 1.8, velocity: vi === 0 ? 100 : 86 })
+              piano.flash(m, { duration: 300, color: hlColor, velocity: 100 })
+            })
+            setTimeout(applyHighlight, step + 60)
+          }, i * step)
+        }
+        return
+      }
       if (mode === 'chord') {
         audio.playNotes(seq, { duration: 2.4, velocity: 100 })
       } else if (mode === 'arp') {
@@ -525,7 +542,7 @@ export function renderChapter(main, chapter) {
       piano.setLabel('jianpu')
       piano.setHighlights(dto.notes.map((n) => [n.midi, resolveVar('--clay')]))
       renderJianpu(jianpuMount, jianpuItemsFromScale(dto), {})
-      const blacks = dto.notes.filter((n) => n.accidental !== 0 && n.octave < 5).map((n) => n.spelled.name())
+      const blacks = dto.notes.filter((n) => n.accidental !== 0).map((n) => n.name.replace(/d+$/, ''))
       fact.textContent = blacks.length
         ? `${current} 大调需要用到的黑键：${blacks.join('、')}。级数关系（1 2 3 4 5 6 7）不变，只是整体搬了家。`
         : `${current} 大调恰好全是白键。`

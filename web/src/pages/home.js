@@ -11,8 +11,10 @@ import { ch5 } from '../content/ch5.js'
 import { ch6 } from '../content/ch6.js'
 import { ch7 } from '../content/ch7.js'
 import { ch8 } from '../content/ch8.js'
+import { ch9 } from '../content/ch9.js'
+import { ch10 } from '../content/ch10.js'
 
-const LESSON_TOTALS = { ch1: ch1, ch2: ch2, ch3: ch3, ch4: ch4, ch5: ch5, ch6: ch6, ch7: ch7, ch8: ch8 }
+const LESSON_TOTALS = { ch1: ch1, ch2: ch2, ch3: ch3, ch4: ch4, ch5: ch5, ch6: ch6, ch7: ch7, ch8: ch8, ch9: ch9, ch10: ch10 }
 
 const TOPIC_LABELS = {
   'note-name': '认音名',
