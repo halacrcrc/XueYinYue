@@ -194,6 +194,7 @@ export const ch10 = {
           caption: '同样从 C 出发，走 1–5–6m–4（C–G–Am–F），末尾再补一个 G→C 的**完全终止**——情绪顶点正好砸在主和弦上。一"悬"一"落"，就是主歌与副歌的和声分工。',
         },
         { t: 'quiz', kinds: ['progression-ear', 'chord-ear'], count: 4, intro: '曲式入门毕业小练：先听辨两个和弦的进行（四选一），再摸摸和弦性质——第十章通关！' },
+        { t: 'drill', kinds: ['progression-ear', 'chord-ear', 'melody-ear'], intro: '毕业特训不限量：进行、和弦、旋律三种耳朵轮着练。' },
       ],
     },
   ],

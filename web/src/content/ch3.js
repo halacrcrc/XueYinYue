@@ -293,6 +293,7 @@ export const ch3 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['build-scale'], count: 2, intro: '在琴上把指定的大调音阶搭出来——这是主动回忆，比看十遍都管用。' },
+        { t: 'drill', kinds: ['build-scale', 'note-name'], intro: '音阶特训不限量：搭音阶、认音名，轮着来。' },
       ],
     },
   ],

@@ -419,6 +419,27 @@ kbd {
   flex-wrap: wrap;
 }
 
+/* 本章特训（不限量程序化出题） */
+.drill-block { margin-top: 1.25rem; }
+
+.drill-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.875rem;
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+.drill-strip b { color: var(--clay-deep); font-size: var(--text-sm); }
+.drill-strip b.is-hot { color: var(--do); }
+
+.drill-fb-actions { display: flex; gap: 0.625rem; flex-wrap: wrap; }
+
 /* ============ 和声块（第六章） ============ */
 .diatonic-grid {
   display: grid;

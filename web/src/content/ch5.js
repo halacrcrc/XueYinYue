@@ -312,6 +312,7 @@ export const ch5 = {
       blocks: [
         { t: 'quiz', kinds: ['chord-see', 'chord-ear'], count: 4, intro: '看谱认和弦 + 闭眼听和弦性质。' },
         { t: 'quiz', kinds: ['build-chord'], count: 2, intro: '最后亲手搭两个。' },
+        { t: 'drill', kinds: ['chord-see', 'chord-ear', 'build-chord'], intro: '和弦特训不限量：认、听、搭三线轮换。' },
       ],
     },
   ],

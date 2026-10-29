@@ -182,6 +182,7 @@ export const ch8 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['interval-see', 'chord-ear', 'build-chord'], count: 5, intro: '最后一轮热身：看谱认音程、闭眼听和弦、上手搭和弦——前几章练出的手艺，写旋律时全用得上。' },
+        { t: 'drill', kinds: ['melody-ear', 'interval-ear', 'build-chord'], intro: '写旋律特训不限量：旋律听辨、音程、搭和弦轮换热手。' },
       ],
     },
   ],

@@ -107,6 +107,7 @@ export const ch1 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['note-name', 'jianpu-digit', 'note-name'], count: 5, intro: '认音名和简谱数字，5 题热身。' },
+        { t: 'drill', kinds: ['note-name', 'jianpu-digit'], intro: '音名与简谱不限量特训——练到条件反射。' },
       ],
     },
   ],

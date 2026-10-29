@@ -153,6 +153,7 @@ export const ch4 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['interval-see', 'interval-ear'], count: 6, intro: '先看谱认音程，再闭上眼听——一半看、一半听。' },
+        { t: 'drill', kinds: ['interval-see', 'interval-ear'], intro: '音程特训不限量：看谱与听辨轮流上，练到出口成对。' },
       ],
     },
   ],

@@ -254,6 +254,10 @@ export function renderChapter(main, chapter) {
       renderQuizBlock(art, block, onQuizDone)
       return
     }
+    if (block.t === 'drill') {
+      renderDrillBlock(art, block, onQuizDone)
+      return
+    }
   }
 
   function renderDemoBlock(art, block) {
@@ -739,6 +743,241 @@ export function renderChapter(main, chapter) {
       stage.appendChild(bar)
     }
 
+    nextQuestion()
+  }
+
+  // ---------- 本章特训（不限量程序化出题） ----------
+
+  function renderDrillBlock(art, block, onDone) {
+    const wrap = document.createElement('section')
+    wrap.className = 'quiz-block drill-block'
+    wrap.innerHTML = `
+      <h3 class="quiz-title">🔥 本章特训</h3>
+      <p class="quiz-sub">${block.intro || '题目由引擎现场生成，做多少道都行——练到你自己喊停。'}</p>`
+    const strip = document.createElement('div')
+    strip.className = 'drill-strip'
+    wrap.appendChild(strip)
+    const stage = document.createElement('div')
+    stage.className = 'quiz-stage'
+    wrap.appendChild(stage)
+    art.appendChild(wrap)
+
+    const stats = { asked: 0, correct: 0, streak: 0, best: 0 }
+    let finished = false
+    let perQuestionPianos = []
+
+    function renderStrip() {
+      strip.innerHTML = `
+        <span class="drill-stat">第 <b>${stats.asked + (finished ? 0 : 1)}</b> 题</span>
+        <span class="drill-stat">答对 <b>${stats.correct}</b>/${stats.asked}</span>
+        <span class="drill-stat">连对 <b class="${stats.streak >= 3 ? 'is-hot' : ''}">${stats.streak}</b></span>
+        <span class="drill-stat">最佳连对 <b>${stats.best}</b></span>`
+    }
+
+    function updateScore(correct) {
+      stats.asked += 1
+      if (correct) {
+        stats.correct += 1
+        stats.streak += 1
+        stats.best = Math.max(stats.best, stats.streak)
+      } else {
+        stats.streak = 0
+      }
+      renderStrip()
+    }
+
+    function clearPerQuestion() {
+      perQuestionPianos.forEach((c) => c.destroy?.())
+      perQuestionPianos = []
+    }
+
+    function endSession() {
+      finished = true
+      clearPerQuestion()
+      const pct = stats.asked ? Math.round((stats.correct / stats.asked) * 100) : 0
+      const verdict =
+        stats.asked === 0
+          ? '下次再来练两道？'
+          : pct >= 90
+            ? '稳如节拍器，这章吃透了！'
+            : pct >= 70
+              ? '很有感觉，继续保持！'
+              : pct >= 45
+                ? '找到感觉了——错的题去错题本里再看看'
+                : '回过头把课程里的演示再点一遍，会顺畅很多'
+      stage.innerHTML = `
+        <div class="quiz-finish">
+          <span class="finish-note">🔥</span>
+          <p>本次特训：答对 <b>${stats.correct}</b> / ${stats.asked}（${pct}%）· 最佳连对 ${stats.best}</p>
+          <p class="quiz-sub">${verdict}</p>
+        </div>`
+      const again = document.createElement('button')
+      again.type = 'button'
+      again.className = 'btn btn-ghost'
+      again.textContent = '再来一轮'
+      again.addEventListener('click', () => {
+        stats.asked = 0
+        stats.correct = 0
+        stats.streak = 0
+        finished = false
+        renderStrip()
+        nextQuestion()
+      })
+      stage.querySelector('.quiz-finish').appendChild(again)
+      onDone?.()
+    }
+
+    function nextQuestion() {
+      if (finished) return
+      clearPerQuestion()
+      renderStrip()
+      stage.innerHTML = ''
+      const kind = block.kinds[stats.asked % block.kinds.length]
+      let q
+      try {
+        q = gen_question(kind)
+      } catch (e) {
+        stage.innerHTML = `<p class="quiz-error">出题失败：${e.message || e}</p>`
+        return
+      }
+      q._t0 = performance.now()
+
+      const head = document.createElement('div')
+      head.className = 'quiz-head'
+      head.innerHTML = `<p class="quiz-prompt">${q.prompt}</p>`
+      if (q.subPrompt) head.innerHTML += `<p class="quiz-subprompt">${q.subPrompt}</p>`
+      stage.appendChild(head)
+
+      if (q.staffNotes && q.staffNotes.length) {
+        const st = document.createElement('div')
+        st.className = 'quiz-staff'
+        stage.appendChild(st)
+        renderStaff(st, q.staffNotes.map((k) => ({ key: k })), {})
+      }
+
+      if (q.play && q.play.length) {
+        const bar = document.createElement('div')
+        bar.className = 'quiz-playbar'
+        const btn = document.createElement('button')
+        btn.type = 'button'
+        btn.className = 'btn btn-ghost'
+        btn.textContent = q.playMode === 'chord' ? '🔊 播放和弦' : '🔊 播放'
+        btn.addEventListener('click', () => {
+          if (q.playMode === 'chord') {
+            audio.playNotes(q.play, { duration: 2.6, velocity: 104 })
+          } else if (q.playMode === 'tonal') {
+            const beat = 0.62
+            q.cadence.forEach((chord, i) => {
+              audio.playNotes(chord, { duration: beat * 0.95, velocity: 92, time: audio.ctx.currentTime + 0.05 + i * beat })
+            })
+            const targetAt = audio.ctx.currentTime + 0.05 + q.cadence.length * beat + 0.35
+            audio.playNotes(q.play, { duration: 1.5, velocity: 104, time: targetAt })
+          } else {
+            audio.playNotes(q.play, { duration: 1.6, velocity: 104, stagger: 0.55 })
+            setTimeout(() => audio.playNotes(q.play, { duration: 2.2, velocity: 92 }), q.play.length * 550 + 250)
+          }
+        })
+        bar.appendChild(btn)
+        stage.appendChild(bar)
+        btn.click()
+      }
+
+      function feedback(result) {
+        updateScore(result.correct)
+        const fb = document.createElement('div')
+        fb.className = `quiz-feedback ${result.correct ? 'is-correct' : 'is-wrong'}`
+        fb.innerHTML = `
+          <p class="fb-line">${result.correct ? '答对了！' : `正确答案：${result.answerLabel}`}</p>
+          <p class="fb-exp">${result.explanation}</p>`
+        const row = document.createElement('div')
+        row.className = 'drill-fb-actions'
+        const next = document.createElement('button')
+        next.type = 'button'
+        next.className = 'btn btn-primary'
+        next.textContent = '下一题 →'
+        next.addEventListener('click', nextQuestion)
+        const stop = document.createElement('button')
+        stop.type = 'button'
+        stop.className = 'btn btn-ghost'
+        stop.textContent = '结束特训'
+        stop.addEventListener('click', endSession)
+        row.append(next, stop)
+        fb.appendChild(row)
+        stage.appendChild(fb)
+        const fbY = fb.getBoundingClientRect().top + window.scrollY - 120
+        window.scrollTo(0, Math.max(0, fbY))
+      }
+
+      if (q.kind === 'mc') {
+        const grid = document.createElement('div')
+        grid.className = 'option-grid'
+        let answered = false
+        const correctLabel = q.options.find((o) => o.key === q.answer)?.label
+        for (const opt of q.options) {
+          const b = document.createElement('button')
+          b.type = 'button'
+          b.className = 'option-btn'
+          b.textContent = opt.label
+          const solfegeIdx = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'].indexOf(opt.label)
+          if (solfegeIdx >= 0) {
+            b.style.setProperty('--dg', `var(${DEGREE_VARS[solfegeIdx]})`)
+            b.classList.add('is-solfege')
+          }
+          b.addEventListener('click', () => {
+            if (answered) return
+            answered = true
+            const responseMs = Math.round(performance.now() - (q._t0 || performance.now()))
+            const result = check_answer(q, opt.key)
+            progress.record(q.topic, result.correct, responseMs)
+            if (result.correct) {
+              b.classList.add('is-right')
+              if (q.play.length) audio.playNotes(q.play, { duration: 2, velocity: 100 })
+            } else {
+              b.classList.add('is-wrong')
+              grid.querySelectorAll('.option-btn').forEach((x) => {
+                if (x.textContent === correctLabel) x.classList.add('is-right')
+              })
+            }
+            feedback(result)
+          })
+          grid.appendChild(b)
+        }
+        stage.appendChild(grid)
+      } else {
+        // build 题：钢琴上搭
+        const mount = document.createElement('div')
+        mount.className = 'quiz-build'
+        stage.appendChild(mount)
+        const selected = new Set()
+        const piano = createPiano(mount, { startMidi: 55, octaves: 2, keyboard: false })
+        perQuestionPianos.push(piano)
+        piano.setHighlights([])
+        const bar = document.createElement('div')
+        bar.className = 'quiz-playbar'
+        const submit = document.createElement('button')
+        submit.type = 'button'
+        submit.className = 'btn btn-primary'
+        submit.textContent = '检查'
+        submit.addEventListener('click', () => {
+          if (submit.disabled) return
+          submit.disabled = true
+          const answer = [...selected].sort((a, b) => a - b).join(',')
+          const responseMs = Math.round(performance.now() - (q._t0 || performance.now()))
+          const result = check_answer(q, answer)
+          progress.record(q.topic, result.correct, responseMs)
+          const correctMidis = q.answer.split(',').map(Number)
+          piano.setHighlights(correctMidis.map((m) => [m, resolveVar(result.correct ? '--fa' : '--do')]))
+          if (!result.correct) {
+            audio.playNotes(correctMidis, { duration: 2, velocity: 100, stagger: 0.25 })
+          }
+          feedback(result)
+        })
+        bar.appendChild(submit)
+        stage.appendChild(bar)
+      }
+    }
+
+    renderStrip()
     nextQuestion()
   }
 

@@ -208,6 +208,7 @@ export const ch9 = {
       blocks: [
         { t: 'quiz', kinds: ['interval-see', 'interval-ear'], count: 4, intro: '对位的基本功是音程：看谱认一认、闭眼听一听两条线交点上的距离。' },
         { t: 'quiz', kinds: ['melody-ear'], count: 2, intro: '再听两条小线条，把简谱挑出来。' },
+        { t: 'drill', kinds: ['interval-see', 'interval-ear', 'melody-ear'], intro: '对位特训不限量：音程是两条线的距离，练到耳朵长茧。' },
       ],
     },
   ],

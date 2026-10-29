@@ -331,6 +331,7 @@ export const ch6 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['chord-see', 'chord-ear'], count: 4, intro: '和声进行学完了，回头检验和弦耳朵。' },
+        { t: 'drill', kinds: ['chord-see', 'chord-ear', 'progression-ear'], intro: '和声特训不限量：和弦与进行听辨轮着来。' },
       ],
     },
   ],

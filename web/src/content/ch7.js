@@ -67,6 +67,7 @@ export const ch7 = {
       title: '小练习',
       blocks: [
         { t: 'quiz', kinds: ['chord-see', 'chord-ear'], count: 4, intro: '第七章通关检验：认和弦、听和弦的耳朵还在吗？顺手把五度圈这张地图也复习一遍。' },
+        { t: 'drill', kinds: ['key-mode', 'chord-see', 'chord-ear'], intro: '五度圈特训不限量：大小调听辨与和弦轮换。' },
       ],
     },
   ],
